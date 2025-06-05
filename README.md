@@ -1,10 +1,10 @@
-# AWS Profile Switcher
+# AWS Pick
 
 A simple CLI tool to easily switch between AWS profiles in your shell environment.
 
 ## Overview
 
-AWS Profile Switcher (`awswitch`) is a command-line utility that helps you quickly switch between different AWS profiles defined in your `~/.aws/config` file. It automatically updates your shell environment by modifying the `AWS_PROFILE` environment variable in your `~/.zshrc` file.
+AWS Pick (`awspick`) is a command-line utility that helps you quickly switch between different AWS profiles defined in your `~/.aws/config` file. It automatically updates your shell environment by modifying the `AWS_PROFILE` environment variable in your `~/.zshrc` file.
 
 ## Features
 
@@ -26,14 +26,14 @@ AWS Profile Switcher (`awswitch`) is a command-line utility that helps you quick
 ### Using pip
 
 ```bash
-pip install aws-profile-switcher
+pip install aws-pick
 ```
 
 ### From source
 
 ```bash
-git clone https://github.com/kkamji/aws-profile-switcher.git
-cd aws-profile-switcher
+git clone https://github.com/kkamji/aws-pick.git
+cd aws-pick
 poetry install
 ```
 
@@ -42,7 +42,7 @@ poetry install
 Simply run the command:
 
 ```bash
-awswitch
+awspick
 ```
 
 This will:
@@ -77,8 +77,8 @@ This project uses Poetry for dependency management and packaging.
 
 ```bash
 # Clone the repository
-git clone https://github.com/kkamji/aws-profile-switcher.git
-cd aws-profile-switcher
+git clone https://github.com/kkamji/aws-pick.git
+cd aws-pick
 
 # Install dependencies
 poetry install
@@ -104,8 +104,8 @@ poetry run isort .
 ## Project Structure
 
 ```
-aws-profile-switcher/
-├── aws_profile_switcher/
+aws-pick/
+├── aws_pick/
 │   ├── __init__.py
 │   ├── cli.py          # Command-line interface
 │   ├── config.py       # AWS config file parsing

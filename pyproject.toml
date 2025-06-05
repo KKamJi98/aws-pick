@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "aws-profile-switcher"
+name = "aws-pick"
 version = "1.0.0"
 description = "A simple CLI tool to easily switch between AWS profiles in your shell environment"
 authors = ["kkamji <kkamji@example.com>"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/kkamji/aws-profile-switcher"
+repository = "https://github.com/kkamji/aws-pick"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -18,7 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Topic :: Utilities",
 ]
-packages = [{include = "aws_profile_switcher"}]
+packages = [{include = "aws_pick"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -32,7 +32,7 @@ isort = "^5.12.0"
 pytest-cov = "^4.1.0"
 
 [tool.poetry.scripts]
-awswitch = "aws_profile_switcher.cli:main"
+awspick = "aws_pick.cli:main"
 
 [build-system]
 requires = ["poetry-core"]
