@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from aws_profile_switcher.cli import get_profile_selection, main
+from aws_pick.cli import get_profile_selection, main
 
 
 @patch("builtins.input")
@@ -84,7 +84,7 @@ def test_get_profile_selection_keyboard_interrupt(mock_input):
     mock_input.assert_called_once()
 
 
-@patch("aws_profile_switcher.cli.read_aws_profiles")
+@patch("aws_pick.cli.read_aws_profiles")
 def test_main_no_profiles(mock_read_profiles):
     """Test main function with no profiles."""
     # Setup mock
@@ -98,9 +98,9 @@ def test_main_no_profiles(mock_read_profiles):
     mock_read_profiles.assert_called_once()
 
 
-@patch("aws_profile_switcher.cli.read_aws_profiles")
-@patch("aws_profile_switcher.cli.display_profiles")
-@patch("aws_profile_switcher.cli.get_profile_selection")
+@patch("aws_pick.cli.read_aws_profiles")
+@patch("aws_pick.cli.display_profiles")
+@patch("aws_pick.cli.get_profile_selection")
 def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_profiles):
     """Test main function with cancelled selection."""
     # Setup mock
@@ -117,10 +117,10 @@ def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_pr
     mock_get_selection.assert_called_once()
 
 
-@patch("aws_profile_switcher.cli.read_aws_profiles")
-@patch("aws_profile_switcher.cli.display_profiles")
-@patch("aws_profile_switcher.cli.get_profile_selection")
-@patch("aws_profile_switcher.cli.update_aws_profile")
+@patch("aws_pick.cli.read_aws_profiles")
+@patch("aws_pick.cli.display_profiles")
+@patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.update_aws_profile")
 @patch("builtins.print")
 def test_main_successful_update(mock_print, mock_update, mock_get_selection, mock_display, mock_read_profiles):
     """Test main function with successful update."""
@@ -141,10 +141,10 @@ def test_main_successful_update(mock_print, mock_update, mock_get_selection, moc
     assert mock_print.call_count >= 3  # At least 3 print calls
 
 
-@patch("aws_profile_switcher.cli.read_aws_profiles")
-@patch("aws_profile_switcher.cli.display_profiles")
-@patch("aws_profile_switcher.cli.get_profile_selection")
-@patch("aws_profile_switcher.cli.update_aws_profile")
+@patch("aws_pick.cli.read_aws_profiles")
+@patch("aws_pick.cli.display_profiles")
+@patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.update_aws_profile")
 def test_main_failed_update(mock_update, mock_get_selection, mock_display, mock_read_profiles):
     """Test main function with failed update."""
     # Setup mock

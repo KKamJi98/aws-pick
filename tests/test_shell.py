@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from aws_profile_switcher.shell import (
+from aws_pick.shell import (
     backup_zshrc,
     get_zshrc_path,
     update_aws_profile,

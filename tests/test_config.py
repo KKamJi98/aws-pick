@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from aws_profile_switcher.config import (
+from aws_pick.config import (
     display_profiles,
     get_aws_config_path,
     read_aws_profiles,

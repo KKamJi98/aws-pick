@@ -4,12 +4,12 @@ import logging
 import sys
 from typing import List, Optional
 
-from aws_profile_switcher.config import (
+from aws_pick.config import (
     display_profiles,
     read_aws_profiles,
     validate_profile_selection,
 )
-from aws_profile_switcher.shell import update_aws_profile
+from aws_pick.shell import update_aws_profile
 
 # Configure logging
 logging.basicConfig(
