@@ -56,7 +56,7 @@ def display_profiles(profiles: List[str]) -> None:
     headers = ["Num", "Profile"]
     
     print("Available AWS Profiles:")
-    print(tabulate(table_data, headers=headers, tablefmt="grid"))
+    print(tabulate(table_data, headers=headers, tablefmt="github"))
     print()
 
 def validate_profile_selection(selection: str, profiles: List[str]) -> Optional[str]:

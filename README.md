@@ -56,14 +56,12 @@ This will:
 Example output:
 ```
 Available AWS Profiles:
-+-----+---------------+
 | Num | Profile       |
-+-----+---------------+
+|-----|---------------|
 |  1  | default       |
 |  2  | development   |
 |  3  | production    |
 |  4  | staging       |
-+-----+---------------+
 
 Enter profile number or name: 2
 Selected profile: development
