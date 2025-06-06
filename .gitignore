@@ -43,6 +43,7 @@ htmlcov/
 
 # Project specific
 .direnv/
+.prompt.md
 # Direnv files
 .direnvrc
 .envrc
