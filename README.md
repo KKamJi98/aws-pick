@@ -6,7 +6,14 @@ A simple CLI tool to easily switch between AWS profiles in your shell environmen
 
 AWS Pick (`awspick`) is a command-line utility that helps you quickly switch between different AWS profiles defined in your `~/.aws/config` file. It automatically updates your shell environment by modifying the `AWS_PROFILE` environment variable in your `~/.zshrc` file.
 
-> **Project History**: This project was originally named "aws-profile-switcher" with the CLI command "awswitch", but has been renamed to "aws-pick" with the CLI command "awspick" for better clarity and usability.
+## Project History
+
+This project has evolved through several iterations:
+
+- **2025-06-07**: Enhanced error handling and improved code documentation
+- **2025-06-06**: Improved documentation and clarified development guidelines
+- **2025-06-05**: Added single-file launcher script (`aws_pick.py`) for easier execution
+- **2025-06-05**: Project renamed from "aws-profile-switcher" (CLI command "awswitch") to "aws-pick" (CLI command "awspick") for better clarity and usability
 
 ## Features
 
@@ -17,6 +24,8 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Creates backup files before modifying your `~/.zshrc`
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
 - Provides clear logging of operations
+- Handles errors gracefully with informative messages
+- Supports case-insensitive profile name matching
 
 ## Installation
 
