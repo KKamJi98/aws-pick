@@ -13,7 +13,7 @@ from aws_pick.config import (
     read_aws_profiles,
     validate_profile_selection,
 )
-from aws_pick.shell import update_aws_profile
+from aws_pick.shell import detect_shell, get_rc_path, update_aws_profile
 
 # Configure logging
 logging.basicConfig(
@@ -86,8 +86,12 @@ def main() -> int:
         
         print(f"Selected profile: {profile}")
         
+        # Detect shell and get RC path
+        shell_name = detect_shell()
+        rc_path, shell_config = get_rc_path(shell_name)
+        
         # Update shell configuration
-        success, backup_path = update_aws_profile(profile)
+        success, backup_path = update_aws_profile(profile, shell_name)
         if not success:
             logger.error("Failed to update AWS profile.")
             return 1
@@ -95,8 +99,13 @@ def main() -> int:
         if backup_path:
             print(f"Backup created at {backup_path}")
         
-        print(f"Updated ~/.zshrc with AWS_PROFILE={profile}")
-        print("Please restart your shell or run 'source ~/.zshrc' to apply changes.")
+        print(f"Updated {rc_path} with AWS_PROFILE={profile}")
+        
+        # Show appropriate source command based on shell
+        if shell_config.name == "fish":
+            print(f"Please restart your shell or run 'source {rc_path}' to apply changes.")
+        else:
+            print(f"Please restart your shell or run 'source {rc_path}' to apply changes.")
         
         return 0
     
