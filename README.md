@@ -4,7 +4,7 @@ A simple CLI tool to easily switch between AWS profiles in your shell environmen
 
 ## Overview
 
-AWS Pick (`awspick`) is a command-line utility that helps you quickly switch between different AWS profiles defined in your `~/.aws/config` file. It automatically updates your shell environment by modifying the `AWS_PROFILE` environment variable in your `~/.zshrc` file.
+AWS Pick (`awspick`) is a command-line utility that helps you quickly switch between different AWS profiles defined in your `~/.aws/config` file. It automatically updates your shell environment by modifying the `AWS_PROFILE` environment variable in your shell's rc file (`~/.zshrc` or `~/.bashrc`).
 
 ## Project History
 
@@ -20,8 +20,8 @@ This project has evolved through several iterations:
 - Lists all available AWS profiles from your `~/.aws/config` file with numbered options
 - Allows selection by either number or profile name
 - Validates input to ensure a valid profile is selected
-- Updates your `~/.zshrc` file to set the selected profile as the default
-- Creates backup files before modifying your `~/.zshrc`
+- Updates your shell rc file to set the selected profile as the default
+- Creates backup files before modifying your rc file
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
 - Provides clear logging of operations
 - Handles errors gracefully with informative messages
@@ -59,8 +59,8 @@ awspick
 This will:
 1. Display a list of available AWS profiles
 2. Prompt you to select a profile by number or name
-3. Update your `~/.zshrc` file to use the selected profile
-4. Create a backup of your original `~/.zshrc` file
+3. Update your shell rc file to use the selected profile
+4. Create a backup of your original rc file
 
 Example output:
 ```
@@ -74,8 +74,8 @@ Available AWS Profiles:
 
 Enter profile number or name: 2
 Selected profile: development
-Updated ~/.zshrc with AWS_PROFILE=development
-Backup created at ~/.zshrc.bak-20250605060000
+Updated ~/.bashrc with AWS_PROFILE=development
+Backup created at ~/.bashrc.bak-20250605060000
 ```
 
 ## Development
