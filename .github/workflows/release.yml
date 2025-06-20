@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write        # 태그·릴리스 생성
+
 jobs:
   release:
     runs-on: ubuntu-latest
