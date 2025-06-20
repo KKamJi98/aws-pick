@@ -1,4 +1,10 @@
 # Changelog
+## [1.3.0] - 2025-06-12
+### Added
+- GitHub Actions workflows for testing and automated releases
+### Changed
+- Migrate package management from Poetry to uv, update docs and environment
+
 
 ## [1.2.1] - 2025-06-11
 ### Changed

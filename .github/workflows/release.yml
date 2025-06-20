@@ -1,0 +1,40 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract version
+        id: extract
+        run: |
+          VERSION=$(grep -m1 -Po '(?<=## \[)\d+\.\d+\.\d+(?=\])' CHANGELOG.md)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Check tag
+        id: check
+        run: |
+          if git tag -l "v${{ steps.extract.outputs.version }}" | grep -q .; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Generate notes
+        id: notes
+        run: |
+          VERSION="${{ steps.extract.outputs.version }}"
+          awk "/^## \[$VERSION\]/ {flag=1;next} /^## \[/ {flag=0} flag" CHANGELOG.md > NOTES.md
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          cat NOTES.md >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+      - name: Create Release
+        if: steps.check.outputs.exists == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "v${{ steps.extract.outputs.version }}"
+          name: "v${{ steps.extract.outputs.version }}"
+          body: ${{ steps.notes.outputs.notes }}
