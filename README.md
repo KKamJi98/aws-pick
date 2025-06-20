@@ -70,6 +70,16 @@ To apply the profile immediately in your current shell, run:
 eval "$(awspick)"
 ```
 
+Add a wrapper function to your shell to avoid typing `eval` each time:
+
+```bash
+awspick_apply() {
+  eval "$(command awspick "$@")"
+}
+```
+
+Use `awspick_apply` to select and apply a profile in one step.
+
 This will:
 1. Display a list of available AWS profiles
 2. Prompt you to select a profile by number or name

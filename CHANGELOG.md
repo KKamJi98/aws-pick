@@ -1,4 +1,10 @@
 # Changelog
+## [1.3.1] - 2025-06-13
+### Added
+- Example shell wrapper function to apply profiles immediately
+### Fixed
+- CI test workflow activates uv virtual environment
+
 ## [1.3.0] - 2025-06-12
 ### Added
 - GitHub Actions workflows for testing and automated releases
