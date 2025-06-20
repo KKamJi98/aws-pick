@@ -21,7 +21,9 @@ jobs:
           uv pip install -e .[dev]
           echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
       - name: Run tests
-        run: .venv/bin/pytest -q
+        run: |
+          source .venv/bin/activate
+          pytest -q
       - name: Lint
         run: |
           .venv/bin/black --check .

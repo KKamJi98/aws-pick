@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aws-pick"
-version = "1.3.2"
+version = "1.3.3"
 description = "A simple CLI tool to easily switch between AWS profiles in your shell environment"
 authors = ["kkamji <kkamji@example.com>"]
 readme = "README.md"

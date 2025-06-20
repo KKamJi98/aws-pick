@@ -1,4 +1,7 @@
 # Changelog
+## [1.3.3] - 2025-06-20
+### Fixed
+- Run tests in CI using uv virtual environment
 ## [1.3.2] - 2025-06-20
 ### Fixed
 - CI workflow uses virtual environment binaries explicitly
