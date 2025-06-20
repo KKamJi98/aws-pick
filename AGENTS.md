@@ -18,38 +18,11 @@
 8. boto3, AWS, Python 패키징 공식 Best Practice를 준수한다.
 9. 타입 힌트, 순수 함수, 모듈화로 가독성과 확장성을 유지한다.
 
----
+## Requirement
 
-## Current Requirement
-
----
-
-## Functional Requirement (Finished)
-
-* `~/.aws/config` 파일에서 프로파일 목록을 읽어 번호와 이름으로 출력한다.
-* 번호 또는 이름 입력을 모두 허용한다.
-* 잘못된 입력(범위 밖 숫자, 존재하지 않는 이름, 빈 문자열)은 재입력을 요구한다.
-* 선택된 프로파일을 `~/.zshrc` 파일의 `export AWS_PROFILE=<선택>` 줄로 치환(없으면 추가)한다.
-* 원본 `~/.zshrc`는 `.bak-YYYYMMDDHHMMSS` 형식으로 백업한다.
-* 같은 프로파일을 선택할 경우 파일을 수정하지 않는다(멱등성).
-
----
-
-## Non-Functional Requirement (Finished)
-
-* Python 3.9 이상.
-* 외부 의존성은 `boto3`, `tabulate` 사용.
-* 입력 검증과 파일 패치 로직에 대해 100% 단위 테스트 커버리지를 확보한다.
-* `logging` 모듈을 사용해 INFO 단계, ERROR 단계 로깅한다.
-* Poetry `scripts`에 `awspick` CLI 엔트리포인트를 정의한다.
-* 프로젝트 루트에 `aws_pick.py` 단일 파일 런처를 제공한다.
-
----
-
-## History
-
-* 2025-06-07 – kkamji – 에러 처리 강화 및 주석 개선
-* 2025-06-06 – kkamji – `.prompt.md` GitHub 제외 명확화
-* 2025-06-05 – kkamji – 단일 파일 런처 추가 및 임포트 경로 수정
-* 2025-06-05 – kkamji – 프로젝트 및 CLI 이름 변경
-* 2025-06-05 – kkamji – 초기 규칙/요구사항/히스토리 작성
+## Environment
+- Python 3.9+
+- Poetry for dependency management
+- direnv with `layout poetry`
+- Formatters: black, isort
+- Testing: pytest

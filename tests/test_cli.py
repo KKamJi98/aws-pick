@@ -13,10 +13,10 @@ def test_get_profile_selection_valid_number(mock_input):
     # Setup mock
     mock_input.return_value = "2"
     profiles = ["default", "dev", "prod"]
-    
+
     # Call function
     result = get_profile_selection(profiles)
-    
+
     # Assertions
     assert result == "dev"
     mock_input.assert_called_once()
@@ -28,10 +28,10 @@ def test_get_profile_selection_valid_name(mock_input):
     # Setup mock
     mock_input.return_value = "prod"
     profiles = ["default", "dev", "prod"]
-    
+
     # Call function
     result = get_profile_selection(profiles)
-    
+
     # Assertions
     assert result == "prod"
     mock_input.assert_called_once()
@@ -44,10 +44,10 @@ def test_get_profile_selection_invalid_then_valid(mock_print, mock_input):
     # Setup mock
     mock_input.side_effect = ["invalid", "1"]
     profiles = ["default", "dev", "prod"]
-    
+
     # Call function
     result = get_profile_selection(profiles)
-    
+
     # Assertions
     assert result == "default"
     assert mock_input.call_count == 2
@@ -60,10 +60,10 @@ def test_get_profile_selection_quit(mock_input):
     # Setup mock
     mock_input.return_value = "q"
     profiles = ["default", "dev", "prod"]
-    
+
     # Call function
     result = get_profile_selection(profiles)
-    
+
     # Assertions
     assert result is None
     mock_input.assert_called_once()
@@ -75,10 +75,10 @@ def test_get_profile_selection_keyboard_interrupt(mock_input):
     # Setup mock
     mock_input.side_effect = KeyboardInterrupt()
     profiles = ["default", "dev", "prod"]
-    
+
     # Call function
     result = get_profile_selection(profiles)
-    
+
     # Assertions
     assert result is None
     mock_input.assert_called_once()
@@ -89,10 +89,10 @@ def test_main_no_profiles(mock_read_profiles):
     """Test main function with no profiles."""
     # Setup mock
     mock_read_profiles.return_value = []
-    
+
     # Call function
     result = main()
-    
+
     # Assertions
     assert result == 1
     mock_read_profiles.assert_called_once()
@@ -106,10 +106,10 @@ def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_pr
     # Setup mock
     mock_read_profiles.return_value = ["default", "dev", "prod"]
     mock_get_selection.return_value = None
-    
+
     # Call function
     result = main()
-    
+
     # Assertions
     assert result == 1
     mock_read_profiles.assert_called_once()
@@ -121,23 +121,32 @@ def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_pr
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
 @patch("aws_pick.cli.update_aws_profile")
+@patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
-def test_main_successful_update(mock_print, mock_update, mock_get_selection, mock_display, mock_read_profiles):
+def test_main_successful_update(
+    mock_print,
+    mock_detect_shell,
+    mock_update,
+    mock_get_selection,
+    mock_display,
+    mock_read_profiles,
+):
     """Test main function with successful update."""
     # Setup mock
     mock_read_profiles.return_value = ["default", "dev", "prod"]
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (True, "/home/user/.zshrc.bak-20250605060000")
-    
+    mock_detect_shell.return_value = "bash"
+
     # Call function
     result = main()
-    
+
     # Assertions
     assert result == 0
     mock_read_profiles.assert_called_once()
     mock_display.assert_called_once()
     mock_get_selection.assert_called_once()
-    mock_update.assert_called_once_with("dev")
+    mock_update.assert_called_once_with("dev", "bash")
     assert mock_print.call_count >= 3  # At least 3 print calls
 
 
@@ -145,19 +154,23 @@ def test_main_successful_update(mock_print, mock_update, mock_get_selection, moc
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
 @patch("aws_pick.cli.update_aws_profile")
-def test_main_failed_update(mock_update, mock_get_selection, mock_display, mock_read_profiles):
+@patch("aws_pick.cli.detect_shell")
+def test_main_failed_update(
+    mock_detect_shell, mock_update, mock_get_selection, mock_display, mock_read_profiles
+):
     """Test main function with failed update."""
     # Setup mock
     mock_read_profiles.return_value = ["default", "dev", "prod"]
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (False, None)
-    
+    mock_detect_shell.return_value = "bash"
+
     # Call function
     result = main()
-    
+
     # Assertions
     assert result == 1
     mock_read_profiles.assert_called_once()
     mock_display.assert_called_once()
     mock_get_selection.assert_called_once()
-    mock_update.assert_called_once_with("dev")
+    mock_update.assert_called_once_with("dev", "bash")

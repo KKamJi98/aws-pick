@@ -28,6 +28,7 @@ This project has evolved through several iterations:
 - Updates your shell configuration file to set the selected profile as the default
 - Creates backup files before modifying your configuration
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
+- Automatically reloads your shell configuration after updating
 - Provides clear logging of operations
 - Handles errors gracefully with informative messages
 - Supports case-insensitive profile name matching
@@ -81,7 +82,7 @@ Enter profile number or name: 2
 Selected profile: development
 Updated ~/.zshrc with AWS_PROFILE=development
 Backup created at ~/.zshrc.bak-20250605060000
-Please restart your shell or run 'source ~/.zshrc' to apply changes.
+Configuration reloaded automatically.
 ```
 
 ## Development
