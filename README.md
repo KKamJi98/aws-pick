@@ -1,5 +1,4 @@
 # AWS Pick
-![CI](https://github.com/kkamji/aws-pick/actions/workflows/test.yml/badge.svg)
 
 A simple CLI tool to easily switch between AWS profiles in your shell environment.
 
