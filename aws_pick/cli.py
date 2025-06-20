@@ -22,10 +22,7 @@ from aws_pick.shell import (
 )
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s: %(message)s",
-)
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -58,7 +55,13 @@ def get_profile_selection(profiles: List[str]) -> Optional[str]:
     """
     while True:
         try:
-            selection = input("Enter profile number or name: ").strip()
+            print("Enter profile number or name: ", end="", file=sys.stderr, flush=True)
+            selection = input().strip()
+
+            if not selection:
+                print("No selection made.", file=sys.stderr)
+                logger.info("Empty selection")
+                return None
 
             # Allow user to cancel
             if selection.lower() in ("q", "quit", "exit"):
@@ -69,9 +72,12 @@ def get_profile_selection(profiles: List[str]) -> Optional[str]:
             if profile:
                 return profile
 
-            print("Invalid selection. Please enter a valid profile number or name.")
+            print(
+                "Invalid selection. Please enter a valid profile number or name.",
+                file=sys.stderr,
+            )
         except KeyboardInterrupt:
-            print("\nOperation cancelled.")
+            print("\nOperation cancelled.", file=sys.stderr)
             logger.info("Profile selection cancelled via keyboard interrupt")
             return None
 
@@ -107,7 +113,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             logger.info("No profile selected, exiting")
             return 1
 
-        print(f"Selected profile: {profile}")
+        print(f"Selected profile: {profile}", file=sys.stderr)
 
         # Detect shell and get RC path
         shell_name = detect_shell()
@@ -120,15 +126,18 @@ def main(argv: Optional[List[str]] = None) -> int:
             return 1
 
         if backup_path:
-            print(f"Backup created at {backup_path}")
+            print(f"Backup created at {backup_path}", file=sys.stderr)
 
-        print(f"Updated {rc_path} with AWS_PROFILE={profile}")
+        print(f"Updated {rc_path} with AWS_PROFILE={profile}", file=sys.stderr)
 
         export_cmd = generate_export_command(profile, shell_name)
 
         # Always print the export command so the user can eval the output
         print(export_cmd)
-        print("Run 'eval \"$(awspick)\"' to apply in the current shell")
+        print(
+            "Run 'eval \"$(awspick)\"' to apply in the current shell",
+            file=sys.stderr,
+        )
 
         return 0
 

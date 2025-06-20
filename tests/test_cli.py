@@ -1,5 +1,6 @@
 """Tests for the CLI module."""
 
+import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -67,6 +68,20 @@ def test_get_profile_selection_quit(mock_input):
     # Assertions
     assert result is None
     mock_input.assert_called_once()
+
+
+@patch("builtins.input")
+@patch("builtins.print")
+def test_get_profile_selection_empty_input(mock_print, mock_input):
+    """Test empty input results in cancellation."""
+    mock_input.return_value = ""
+    profiles = ["default", "dev", "prod"]
+
+    result = get_profile_selection(profiles)
+
+    assert result is None
+    mock_input.assert_called_once()
+    mock_print.assert_any_call("No selection made.", file=sys.stderr)
 
 
 @patch("builtins.input")

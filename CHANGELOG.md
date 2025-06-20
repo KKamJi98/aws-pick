@@ -1,4 +1,12 @@
 # Changelog
+## [1.3.5] - 2025-06-21
+### Added
+- Document shell function to use `aws_pick.py` directly in README.
+## [1.3.4] - 2025-06-21
+### Changed
+- CLI now prints menus and logs to stderr, leaving only the export command on stdout.
+### Added
+- Graceful exit when no selection is made.
 ## [1.3.3] - 2025-06-20
 ### Fixed
 - Run tests in CI using uv virtual environment

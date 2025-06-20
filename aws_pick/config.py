@@ -8,6 +8,7 @@ displaying available profiles, and validating user selections.
 import configparser
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -78,22 +79,22 @@ def display_profiles(profiles: List[str]) -> None:
         from tabulate import tabulate
 
         if not profiles:
-            print("No AWS profiles found in ~/.aws/config")
+            print("No AWS profiles found in ~/.aws/config", file=sys.stderr)
             return
 
         table_data = [(i + 1, profile) for i, profile in enumerate(profiles)]
         headers = ["Num", "Profile"]
 
-        print("Available AWS Profiles:")
-        print(tabulate(table_data, headers=headers, tablefmt="github"))
-        print()
+        print("Available AWS Profiles:", file=sys.stderr)
+        print(tabulate(table_data, headers=headers, tablefmt="github"), file=sys.stderr)
+        print(file=sys.stderr)
     except ImportError:
         # Fallback if tabulate is not available
         logger.warning("tabulate library not found, using simple format")
-        print("Available AWS Profiles:")
+        print("Available AWS Profiles:", file=sys.stderr)
         for i, profile in enumerate(profiles, 1):
-            print(f"{i}. {profile}")
-        print()
+            print(f"{i}. {profile}", file=sys.stderr)
+        print(file=sys.stderr)
 
 
 def validate_profile_selection(selection: str, profiles: List[str]) -> Optional[str]:

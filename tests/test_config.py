@@ -75,7 +75,9 @@ def test_display_profiles_empty(mock_print):
     with patch.dict("sys.modules", {"tabulate": dummy}):
         display_profiles([])
         dummy.tabulate.assert_not_called()
-    mock_print.assert_called_once_with("No AWS profiles found in ~/.aws/config")
+    mock_print.assert_called_once_with(
+        "No AWS profiles found in ~/.aws/config", file=sys.stderr
+    )
 
 
 def test_validate_profile_selection():

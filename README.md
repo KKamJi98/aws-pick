@@ -63,21 +63,31 @@ Simply run the command:
 awspick
 ```
 
+Or invoke the launcher script directly:
+
+```bash
+python3 /path/to/aws_pick.py
+```
+
 To apply the profile immediately in your current shell, run:
 
 ```bash
-eval "$(awspick)"
+eval "$(python3 /path/to/aws_pick.py)"
 ```
+
+All prompts and logs are printed to **stderr**, while the final
+`export AWS_PROFILE="..."` command is printed to **stdout**. This
+ensures the menu is visible when using command substitution.
 
 Add a wrapper function to your shell to avoid typing `eval` each time:
 
 ```bash
-awspick_apply() {
-  eval "$(command awspick "$@")"
+function awspick() {
+    eval "$(python3 /your/path/to/aws_pick.py)"
 }
 ```
 
-Use `awspick_apply` to select and apply a profile in one step.
+Use this function to select and apply a profile in one step.
 
 This will:
 1. Display a list of available AWS profiles
