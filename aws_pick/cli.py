@@ -4,6 +4,7 @@ This module provides the main CLI functionality for the AWS Pick tool,
 including user interaction, profile selection, and command execution.
 """
 
+import argparse
 import logging
 import sys
 from typing import List, Optional
@@ -15,8 +16,8 @@ from aws_pick.config import (
 )
 from aws_pick.shell import (
     detect_shell,
+    generate_export_command,
     get_rc_path,
-    source_rc_file,
     update_aws_profile,
 )
 
@@ -26,6 +27,18 @@ logging.basicConfig(
     format="%(levelname)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    """Parse command-line arguments."""
+
+    parser = argparse.ArgumentParser(description="AWS profile picker")
+    parser.add_argument(
+        "--export-command",
+        action="store_true",
+        help="Print shell command to set AWS_PROFILE",
+    )
+    return parser.parse_args(argv)
 
 
 def get_profile_selection(profiles: List[str]) -> Optional[str]:
@@ -62,7 +75,7 @@ def get_profile_selection(profiles: List[str]) -> Optional[str]:
             return None
 
 
-def main() -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     """
     Main entry point for the CLI.
 
@@ -75,6 +88,8 @@ def main() -> int:
     3. Gets user selection
     4. Updates shell configuration with the selected profile
     """
+    args = parse_args(argv)
+
     try:
         # Read AWS profiles
         profiles = read_aws_profiles()
@@ -108,8 +123,14 @@ def main() -> int:
 
         print(f"Updated {rc_path} with AWS_PROFILE={profile}")
 
-        # Automatically source the shell configuration
-        source_rc_file(shell_config)
+        export_cmd = generate_export_command(profile, shell_name)
+
+        if args.export_command:
+            print(export_cmd)
+        else:
+            print(
+                "Run 'eval \"$(awspick --export-command)\"' to apply to the current shell"
+            )
 
         return 0
 

@@ -12,6 +12,7 @@ from aws_pick.shell import (
     ShellConfig,
     backup_rc_file,
     detect_shell,
+    generate_export_command,
     get_rc_path,
     get_shell_configs,
     update_aws_profile,
@@ -285,3 +286,15 @@ def test_update_aws_profile_no_rc_file_fish(
         call_args[0][0] for call_args in handle.write.call_args_list
     )
     assert "# Created by AWS Pick" in written_content
+
+
+def test_generate_export_command():
+    """Test generating export command for different shells."""
+
+    bash_cmd = generate_export_command("dev", "bash")
+    zsh_cmd = generate_export_command("dev", "zsh")
+    fish_cmd = generate_export_command("dev", "fish")
+
+    assert bash_cmd == 'export AWS_PROFILE="dev"'
+    assert zsh_cmd == 'export AWS_PROFILE="dev"'
+    assert fish_cmd == 'set -gx AWS_PROFILE "dev"'
