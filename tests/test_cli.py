@@ -182,7 +182,7 @@ def test_main_failed_update(
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
-def test_main_export_command(
+def test_main_outputs_export_command(
     mock_print,
     mock_detect_shell,
     mock_update,
@@ -190,14 +190,14 @@ def test_main_export_command(
     mock_display,
     mock_read_profiles,
 ):
-    """Test printing export command for current shell."""
+    """Test export command is printed by default."""
 
     mock_read_profiles.return_value = ["default", "dev", "prod"]
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (True, None)
     mock_detect_shell.return_value = "bash"
 
-    result = main(["--export-command"])
+    result = main([])
 
     assert result == 0
     mock_print.assert_any_call('export AWS_PROFILE="dev"')

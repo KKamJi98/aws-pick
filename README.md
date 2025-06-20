@@ -28,7 +28,7 @@ This project has evolved through several iterations:
 - Updates your shell configuration file to set the selected profile as the default
 - Creates backup files before modifying your configuration
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
-- Provides a shell command for immediate application using `--export-command`
+- Prints a shell command for immediate application
 - Provides clear logging of operations
 - Handles errors gracefully with informative messages
 - Supports case-insensitive profile name matching
@@ -65,7 +65,7 @@ awspick
 To apply the profile immediately in your current shell, run:
 
 ```bash
-eval "$(awspick --export-command)"
+eval "$(awspick)"
 ```
 
 This will:

@@ -33,10 +33,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     """Parse command-line arguments."""
 
     parser = argparse.ArgumentParser(description="AWS profile picker")
+    # Deprecated option kept for backward compatibility but ignored
     parser.add_argument(
         "--export-command",
         action="store_true",
-        help="Print shell command to set AWS_PROFILE",
+        help=argparse.SUPPRESS,
     )
     return parser.parse_args(argv)
 
@@ -125,12 +126,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         export_cmd = generate_export_command(profile, shell_name)
 
-        if args.export_command:
-            print(export_cmd)
-        else:
-            print(
-                "Run 'eval \"$(awspick --export-command)\"' to apply to the current shell"
-            )
+        # Always print the export command so the user can eval the output
+        print(export_cmd)
+        print("Run 'eval \"$(awspick)\"' to apply in the current shell")
 
         return 0
 
