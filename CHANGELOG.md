@@ -1,4 +1,8 @@
 # Changelog
+## [1.3.2] - 2025-06-20
+### Fixed
+- CI workflow uses virtual environment binaries explicitly
+
 ## [1.3.1] - 2025-06-13
 ### Added
 - Example shell wrapper function to apply profiles immediately
