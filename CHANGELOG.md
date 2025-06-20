@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.1] - 2025-06-11
+### Changed
+- CLI prints the export command by default; `--export-command` is no longer required
+
+## [1.2.0] - 2025-06-11
+### Added
+- `--export-command` option prints the shell command to apply the profile
+### Changed
+- README instructions updated; shell configs are no longer sourced automatically
+
 ## [1.1.0] - 2025-06-10
 ### Added
 - Automatically source the appropriate shell rc file after profile update.

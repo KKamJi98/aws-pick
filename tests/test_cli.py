@@ -91,7 +91,7 @@ def test_main_no_profiles(mock_read_profiles):
     mock_read_profiles.return_value = []
 
     # Call function
-    result = main()
+    result = main([])
 
     # Assertions
     assert result == 1
@@ -108,7 +108,7 @@ def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_pr
     mock_get_selection.return_value = None
 
     # Call function
-    result = main()
+    result = main([])
 
     # Assertions
     assert result == 1
@@ -139,7 +139,7 @@ def test_main_successful_update(
     mock_detect_shell.return_value = "bash"
 
     # Call function
-    result = main()
+    result = main([])
 
     # Assertions
     assert result == 0
@@ -166,7 +166,7 @@ def test_main_failed_update(
     mock_detect_shell.return_value = "bash"
 
     # Call function
-    result = main()
+    result = main([])
 
     # Assertions
     assert result == 1
@@ -174,3 +174,30 @@ def test_main_failed_update(
     mock_display.assert_called_once()
     mock_get_selection.assert_called_once()
     mock_update.assert_called_once_with("dev", "bash")
+
+
+@patch("aws_pick.cli.read_aws_profiles")
+@patch("aws_pick.cli.display_profiles")
+@patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.update_aws_profile")
+@patch("aws_pick.cli.detect_shell")
+@patch("builtins.print")
+def test_main_outputs_export_command(
+    mock_print,
+    mock_detect_shell,
+    mock_update,
+    mock_get_selection,
+    mock_display,
+    mock_read_profiles,
+):
+    """Test export command is printed by default."""
+
+    mock_read_profiles.return_value = ["default", "dev", "prod"]
+    mock_get_selection.return_value = "dev"
+    mock_update.return_value = (True, None)
+    mock_detect_shell.return_value = "bash"
+
+    result = main([])
+
+    assert result == 0
+    mock_print.assert_any_call('export AWS_PROFILE="dev"')

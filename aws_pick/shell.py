@@ -281,3 +281,10 @@ def source_rc_file(shell_config: ShellConfig) -> bool:
     except Exception as e:
         logger.error(f"Failed to source rc file: {e}")
         return False
+
+
+def generate_export_command(profile_name: str, shell_name: str = None) -> str:
+    """Return the shell command to export AWS_PROFILE for the given shell."""
+
+    _, shell_config = get_rc_path(shell_name)
+    return shell_config.get_profile_line(profile_name)
