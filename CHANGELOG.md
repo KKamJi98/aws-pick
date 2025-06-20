@@ -1,4 +1,23 @@
 # Changelog
+## [1.3.3] - 2025-06-20
+### Fixed
+- Run tests in CI using uv virtual environment
+## [1.3.2] - 2025-06-20
+### Fixed
+- CI workflow uses virtual environment binaries explicitly
+
+## [1.3.1] - 2025-06-13
+### Added
+- Example shell wrapper function to apply profiles immediately
+### Fixed
+- CI test workflow activates uv virtual environment
+
+## [1.3.0] - 2025-06-12
+### Added
+- GitHub Actions workflows for testing and automated releases
+### Changed
+- Migrate package management from Poetry to uv, update docs and environment
+
 
 ## [1.2.1] - 2025-06-11
 ### Changed

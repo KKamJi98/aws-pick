@@ -1,4 +1,5 @@
 # AWS Pick
+![CI](https://github.com/kkamji/aws-pick/actions/workflows/test.yml/badge.svg)
 
 A simple CLI tool to easily switch between AWS profiles in your shell environment.
 
@@ -38,7 +39,7 @@ This project has evolved through several iterations:
 ### Prerequisites
 
 - Python 3.9 or higher
-- Poetry (for development)
+- uv (for development)
 
 ### Using pip
 
@@ -51,7 +52,8 @@ pip install aws-pick
 ```bash
 git clone https://github.com/kkamji/aws-pick.git
 cd aws-pick
-poetry install
+uv venv .venv
+uv pip install -e .[dev]
 ```
 
 ## Usage
@@ -67,6 +69,16 @@ To apply the profile immediately in your current shell, run:
 ```bash
 eval "$(awspick)"
 ```
+
+Add a wrapper function to your shell to avoid typing `eval` each time:
+
+```bash
+awspick_apply() {
+  eval "$(command awspick "$@")"
+}
+```
+
+Use `awspick_apply` to select and apply a profile in one step.
 
 This will:
 1. Display a list of available AWS profiles
@@ -93,7 +105,7 @@ Configuration reloaded automatically.
 
 ## Development
 
-This project uses Poetry for dependency management and packaging.
+This project uses [uv](https://github.com/astral-sh/uv) for dependency management.
 
 ### Setup development environment
 
@@ -103,24 +115,24 @@ git clone https://github.com/kkamji/aws-pick.git
 cd aws-pick
 
 # Install dependencies
-poetry install
+uv venv .venv
+uv pip install -e .[dev]
 
 # Setup direnv (optional)
-echo "layout poetry" > .envrc
 direnv allow
 ```
 
 ### Running tests
 
 ```bash
-poetry run pytest
+pytest
 ```
 
 ### Code formatting
 
 ```bash
-poetry run black .
-poetry run isort .
+black .
+isort .
 ```
 
 ## Project Structure
