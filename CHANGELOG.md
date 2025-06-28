@@ -1,4 +1,12 @@
 # Changelog
+## [1.3.6](https://github.com/KKamJi98/aws-pick/compare/v1.3.5...v1.3.6) (2025-06-28)
+
+
+### Documentation
+
+* Refactor README and CHANGELOG ([dc9576f](https://github.com/KKamJi98/aws-pick/commit/dc9576fd7598b3e0ae0427771d59eea49d7eaa48))
+* Update README example and refactor GEMINI.md ([c67a6b3](https://github.com/KKamJi98/aws-pick/commit/c67a6b316f0ac43df58840b9aa0c18b2f182b053))
+
 ## [1.3.5] - 2025-06-21
 ### Added
 - Document shell function to use `aws_pick.py` directly in README.
