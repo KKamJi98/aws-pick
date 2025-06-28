@@ -3,14 +3,16 @@
 A simple CLI tool to easily switch between AWS profiles in your shell environment.
 
 ```
-INFO: Found 2 AWS profiles
+INFO: Found 4 AWS profiles
   AWS Profiles
-┏━━━━━┳━━━━━━━━━┓
-┃ No. ┃ Profile ┃
-┡━━━━━╇━━━━━━━━━┩
-│   1 │ default │
-│   2 │ kkamji  │
-└─────┴─────────┘
+┏━━━━━┳━━━━━━━━━━━┓
+┃ No. ┃ Profile   ┃
+┡━━━━━╇━━━━━━━━━━━┩
+│   1 │ default   │
+│   2 │ dev       │
+│   3 │ stg       │
+│   4 │ prod      │
+└─────┴───────────┘
 Enter profile number or name:
 ```
 
