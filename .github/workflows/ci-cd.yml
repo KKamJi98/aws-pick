@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write # 태그·릴리스 생성
   pull-requests: write # release-please-action이 PR을 생성하기 위해 필요
+  issues: write # 레이블 생성 권한 추가
 
 jobs:
   test:
