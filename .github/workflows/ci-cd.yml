@@ -1,9 +1,14 @@
-name: test
+name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
+
+permissions:
+  contents: write # 태그·릴리스 생성
+  pull-requests: write # release-please-action이 PR을 생성하기 위해 필요
 
 jobs:
   test:
@@ -28,3 +33,13 @@ jobs:
         run: |
           .venv/bin/black --check .
           .venv/bin/isort --check .
+
+  release-please:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: python
