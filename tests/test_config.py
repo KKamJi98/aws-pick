@@ -57,26 +57,31 @@ def test_read_aws_profiles_no_config(mock_get_path):
     assert profiles == []
 
 
-@patch("builtins.print")
-def test_display_profiles(mock_print):
-    dummy = MagicMock()
-    dummy.tabulate.return_value = "MOCK_TABLE"
-    with patch.dict("sys.modules", {"tabulate": dummy}):
-        profiles = ["default", "dev", "prod"]
-        display_profiles(profiles)
-        dummy.tabulate.assert_called_once()
-    assert mock_print.call_count >= 3
+@patch("aws_pick.config.Console")
+def test_display_profiles(mock_console_class):
+    """Test displaying profiles using rich."""
+    mock_console = MagicMock()
+    mock_console_class.return_value = mock_console
+
+    profiles = ["default", "dev", "prod"]
+    display_profiles(profiles)
+
+    mock_console_class.assert_called_once_with(file=sys.stderr)
+    mock_console.print.assert_called_once()
+    # Further assertions can be added to check table content if needed
 
 
-@patch("builtins.print")
-def test_display_profiles_empty(mock_print):
-    dummy = MagicMock()
-    dummy.tabulate.return_value = "MOCK_TABLE"
-    with patch.dict("sys.modules", {"tabulate": dummy}):
-        display_profiles([])
-        dummy.tabulate.assert_not_called()
-    mock_print.assert_called_once_with(
-        "No AWS profiles found in ~/.aws/config", file=sys.stderr
+@patch("aws_pick.config.Console")
+def test_display_profiles_empty(mock_console_class):
+    """Test displaying profiles when no profiles are found."""
+    mock_console = MagicMock()
+    mock_console_class.return_value = mock_console
+
+    display_profiles([])
+
+    mock_console_class.assert_called_once_with(file=sys.stderr)
+    mock_console.print.assert_called_once_with(
+        "[bold red]No AWS profiles found in ~/.aws/config[/bold red]"
     )
 
 

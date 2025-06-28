@@ -12,6 +12,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from rich.console import Console
+from rich.table import Table
+
 logger = logging.getLogger(__name__)
 
 
@@ -66,35 +69,25 @@ def read_aws_profiles() -> List[str]:
 
 def display_profiles(profiles: List[str]) -> None:
     """
-    Display available AWS profiles in a tabulated format.
+    Display available AWS profiles in a tabulated format using rich.
 
     Args:
         profiles (List[str]): List of profile names
-
-    Note:
-        Uses the tabulate library to create a nicely formatted table
-        with numbered options for easy selection.
     """
-    try:
-        from tabulate import tabulate
+    console = Console(file=sys.stderr)
 
-        if not profiles:
-            print("No AWS profiles found in ~/.aws/config", file=sys.stderr)
-            return
+    if not profiles:
+        console.print("[bold red]No AWS profiles found in ~/.aws/config[/bold red]")
+        return
 
-        table_data = [(i + 1, profile) for i, profile in enumerate(profiles)]
-        headers = ["Num", "Profile"]
+    table = Table(title="AWS Profiles", style="bold blue")
+    table.add_column("No.", style="cyan", justify="right")
+    table.add_column("Profile", style="green")
 
-        print("Available AWS Profiles:", file=sys.stderr)
-        print(tabulate(table_data, headers=headers, tablefmt="github"), file=sys.stderr)
-        print(file=sys.stderr)
-    except ImportError:
-        # Fallback if tabulate is not available
-        logger.warning("tabulate library not found, using simple format")
-        print("Available AWS Profiles:", file=sys.stderr)
-        for i, profile in enumerate(profiles, 1):
-            print(f"{i}. {profile}", file=sys.stderr)
-        print(file=sys.stderr)
+    for i, profile in enumerate(profiles):
+        table.add_row(str(i + 1), profile)
+
+    console.print(table)
 
 
 def validate_profile_selection(selection: str, profiles: List[str]) -> Optional[str]:

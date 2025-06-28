@@ -48,3 +48,5 @@ poetry.lock
 # Direnv files
 .direnvrc
 .envrc
+
+GEMINI.md
