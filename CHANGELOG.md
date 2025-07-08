@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.7](https://github.com/KKamJi98/aws-pick/compare/v1.3.6...v1.3.7) (2025-07-08)
+
+
+### Documentation
+
+* update README.md to reflect new repo URL and remove pip install ([96330ac](https://github.com/KKamJi98/aws-pick/commit/96330ac63c2bc90ba26ea836abf0afe06423ba4b))
+
 ## [1.3.6](https://github.com/KKamJi98/aws-pick/compare/v1.3.5...v1.3.6) (2025-06-28)
 
 
