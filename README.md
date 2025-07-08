@@ -46,16 +46,10 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Python 3.9 or higher
 - uv (for development)
 
-### Using pip
-
-```bash
-pip install aws-pick
-```
-
 ### From source
 
 ```bash
-git clone https://github.com/kkamji/aws-pick.git
+git clone https://github.com/KKamJi98/aws-pick.git
 cd aws-pick
 uv venv .venv
 uv pip install -e .[dev]
@@ -126,7 +120,7 @@ This project uses [uv](https://github.com/astral-sh/uv) for dependency managemen
 
 ```bash
 # Clone the repository
-git clone https://github.com/kkamji/aws-pick.git
+git clone https://github.com/KKamJi98/aws-pick.git
 cd aws-pick
 
 # Install dependencies
