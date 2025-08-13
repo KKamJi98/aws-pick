@@ -41,13 +41,7 @@ awspick = "aws_pick.cli:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.black]
-line-length = 88
-target-version = ["py39"]
 
-[tool.isort]
-profile = "black"
-line_length = 88
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
