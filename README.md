@@ -193,6 +193,16 @@ black .
 isort .
 ```
 
+## CI
+
+- Single workflow: `.github/workflows/ci.yml`
+- Triggers:
+  - `pull_request` and all branch `push`
+- Behavior:
+  - Runs tests and lint on every PR/push
+  - Uses `STAGE=prod` on `main`, otherwise `STAGE=preprod`
+  - Runs `googleapis/release-please-action@v4` only on `main`
+
 ## Project Structure
 
 ```
