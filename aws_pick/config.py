@@ -76,11 +76,12 @@ def _parse_group_rules(rules: Optional[str]) -> List[Tuple[str, List[str]]]:
     Returns an ordered list of tuples [(group, [keywords...])].
     """
     if not rules:
+        # Default order puts "preprod" second from bottom (above "others")
         return [
-            ("preprod", ["preprod"]),
             ("prod", ["prod"]),
             ("stg", ["stg"]),
             ("dev", ["dev"]),
+            ("preprod", ["preprod"]),
         ]
 
     ordered: List[Tuple[str, List[str]]] = []
@@ -110,6 +111,19 @@ def _match_any(text: str, patterns: List[str], *, regex: bool, case_sensitive: b
         text = text.lower()
         patterns = [p.lower() for p in patterns]
     return any(p in text for p in patterns)
+
+
+def _match_group_keyword(text: str, keyword: str) -> bool:
+    """Match group keyword on token boundaries to avoid partial collisions.
+
+    Examples:
+    - Matches: "foo-prod", "prod", "prod-bar", "bar_prod" (prod as token)
+    - Does not match: "preprod", "production" (prod is a substring only)
+    """
+    import re as _re
+
+    pattern = rf"(^|\b|[-_]){_re.escape(keyword)}($|\b|[-_])"
+    return _re.search(pattern, text, flags=_re.IGNORECASE) is not None
 
 
 def filter_profiles(
@@ -181,7 +195,7 @@ def get_grouped_profiles(
     for profile in filtered:
         assigned = False
         for name, keywords in ordered_rules:
-            if _match_any(profile, keywords, regex=False, case_sensitive=False):
+            if any(_match_group_keyword(profile, kw) for kw in keywords):
                 groups[name].append(profile)
                 assigned = True
                 break
