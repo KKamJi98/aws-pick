@@ -39,6 +39,16 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Provides clear logging of operations
 - Handles errors gracefully with informative messages
 - Supports case-insensitive profile name matching
+- Filtering and grouping via CLI flags or env vars
+
+## How It Works
+
+- Read profiles: Parses `~/.aws/config` and collects `default` and sections named `profile <name>`.
+- Filter list: Applies include/exclude patterns from CLI flags or env vars. Patterns can be substrings or regular expressions (`--regex`), with optional case sensitivity (`--case-sensitive`).
+- Group profiles: Groups names using ordered rules (e.g., `preprod`, `prod`, `stg`, `dev`). First matching rule wins; unmatched profiles go to `others`.
+- Display and select: Renders a numbered table via `rich`. Input accepts either the number (1-based, current display order) or the profile name (case-insensitive match supported).
+- Apply to shell: Detects your shell (`bash`, `zsh`, `fish`) and writes or replaces a single `AWS_PROFILE="<name>"` line in the corresponding rc file. Creates a timestamped backup and avoids duplicate changes if the same profile is already set.
+- Export command: Prints the exact shell command to stdout so you can run `eval "$(awspick)"` to apply immediately in the current session.
 
 ## Installation
 
@@ -111,6 +121,44 @@ Selected profile: development
 Updated ~/.zshrc with AWS_PROFILE=development
 Backup created at ~/.zshrc.bak-20250605060000
 Configuration reloaded automatically.
+```
+
+## Filtering and Grouping
+
+You can control which profiles are shown and how they are grouped.
+
+- `-f, --filter`: Only show profiles matching any given substring.
+- `-x, --exclude`: Exclude profiles matching any given substring.
+- `-g, --groups`: Only display specific groups (e.g., `prod,dev`).
+- `--group-rules`: Customize grouping rules. Order matters.
+- `--regex`: Treat `--filter`/`--exclude` as regular expressions.
+- `--case-sensitive`: Make matches case-sensitive.
+
+Examples:
+
+```bash
+# Show only prod and dev groups
+awspick --groups prod,dev
+
+# Show profiles containing "tooling" but not "legacy"
+awspick -f tooling -x legacy
+
+# Regex example: include profiles ending with -admin, exclude sandbox
+awspick --regex -f '.*-admin$' -x sandbox
+
+# Custom grouping: order ensures first match wins
+awspick --group-rules 'preprod=preprod;prod=prod,production;stg=stg;dev=dev'
+```
+
+Environment variables (useful per-host/per-shell):
+
+```bash
+export AWSPICK_FILTER="tooling,admin"
+export AWSPICK_EXCLUDE="legacy"
+export AWSPICK_GROUPS_SHOW="prod,dev"
+export AWSPICK_GROUP_RULES='preprod=preprod;prod=prod;stg=stg;dev=dev'
+export AWSPICK_REGEX=0             # 1/true to enable regex
+export AWSPICK_CASE_SENSITIVE=0    # 1/true for case-sensitive
 ```
 
 ## Development
