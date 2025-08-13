@@ -1,9 +1,8 @@
 """Tests for the CLI module."""
 
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 from aws_pick.cli import get_profile_selection, main
 

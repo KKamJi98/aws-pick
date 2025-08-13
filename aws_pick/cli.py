@@ -96,7 +96,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     3. Gets user selection
     4. Updates shell configuration with the selected profile
     """
-    args = parse_args(argv)
+    
 
     try:
         # Read AWS profiles

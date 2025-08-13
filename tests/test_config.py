@@ -1,11 +1,9 @@
 """Tests for the config module."""
 
-import configparser
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from aws_pick.config import (
     display_profiles,

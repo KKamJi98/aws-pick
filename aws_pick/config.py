@@ -7,10 +7,9 @@ displaying available profiles, and validating user selections.
 
 import configparser
 import logging
-import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from rich.console import Console
 from rich.table import Table

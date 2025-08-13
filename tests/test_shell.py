@@ -1,12 +1,8 @@
 """Tests for the shell module."""
 
-import os
-import re
-import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
-import pytest
 
 from aws_pick.shell import (
     ShellConfig,

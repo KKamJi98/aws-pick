@@ -13,7 +13,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +212,7 @@ def update_aws_profile(
         if shell_config.name == "fish":
             rc_path.parent.mkdir(parents=True, exist_ok=True)
             with open(rc_path, "w") as f:
-                f.write(f"# Created by AWS Pick\n\n")
+                f.write("# Created by AWS Pick\n\n")
             logger.info(f"Created new config file at {rc_path}")
         else:
             logger.error(f"Shell config file not found at {rc_path}")
