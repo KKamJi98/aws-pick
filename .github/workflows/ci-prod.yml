@@ -1,0 +1,52 @@
+name: CI/CD (prod)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  test-prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      STAGE: prod
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies
+        run: |
+          uv venv .venv
+          uv pip install -e .[dev]
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+      - name: Install ruff
+        run: |
+          uv pip install ruff
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest -q
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+
+  release-please:
+    needs: test-prod
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: python
+

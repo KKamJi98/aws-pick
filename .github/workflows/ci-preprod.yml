@@ -1,19 +1,20 @@
-name: CI/CD
+name: CI (preprod)
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+  push:
+    branches-ignore:
+      - main
 
 permissions:
-  contents: write # 태그·릴리스 생성
-  pull-requests: write # release-please-action이 PR을 생성하기 위해 필요
-  issues: write # 레이블 생성 권한 추가
+  contents: read
 
 jobs:
-  test:
+  test-preprod:
     runs-on: ubuntu-latest
+    environment: preprod
+    env:
+      STAGE: preprod
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -28,7 +29,6 @@ jobs:
           echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
       - name: Install ruff
         run: |
-          # Ensure ruff is available for linting
           uv pip install ruff
       - name: Run tests
         run: |
@@ -39,12 +39,3 @@ jobs:
           ruff check .
           ruff format --check .
 
-  release-please:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          release-type: python
