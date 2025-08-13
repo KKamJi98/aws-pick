@@ -101,7 +101,9 @@ def _parse_group_rules(rules: Optional[str]) -> List[Tuple[str, List[str]]]:
     return ordered
 
 
-def _match_any(text: str, patterns: List[str], *, regex: bool, case_sensitive: bool) -> bool:
+def _match_any(
+    text: str, patterns: List[str], *, regex: bool, case_sensitive: bool
+) -> bool:
     import re as _re
 
     flags = 0 if case_sensitive else _re.IGNORECASE
