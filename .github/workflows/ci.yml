@@ -1,20 +1,21 @@
-name: CI (preprod)
+name: CI
 
 on:
   pull_request:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - '**'
 
 permissions:
   contents: read
 
 jobs:
-  test-preprod:
+  test:
     runs-on: ubuntu-latest
-    environment: preprod
+    # Use prod env on main, preprod otherwise
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'preprod' }}
     env:
-      STAGE: preprod
+      STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || 'preprod' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -38,4 +39,18 @@ jobs:
         run: |
           ruff check .
           ruff format --check .
+
+  release-please:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: python
 
