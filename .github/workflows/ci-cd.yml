@@ -32,8 +32,8 @@ jobs:
           pytest -q
       - name: Lint
         run: |
-          .venv/bin/black --check .
-          .venv/bin/isort --check .
+          .venv/bin/ruff check .
+          .venv/bin/ruff format --check .
 
   release-please:
     needs: test

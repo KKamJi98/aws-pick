@@ -96,7 +96,6 @@ def main(argv: Optional[List[str]] = None) -> int:
     3. Gets user selection
     4. Updates shell configuration with the selected profile
     """
-    
 
     try:
         # Read AWS profiles
@@ -140,7 +139,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         # Always print the export command so the user can eval the output
         print(export_cmd)
         print(
-            "Run 'eval \"$(awspick)\"\' to apply in the current shell",
+            "Run 'eval \"$(awspick)\"' to apply in the current shell",
             file=sys.stderr,
         )
 
@@ -149,7 +148,6 @@ def main(argv: Optional[List[str]] = None) -> int:
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}", exc_info=True)
         return 1
-
 
 
 if __name__ == "__main__":
