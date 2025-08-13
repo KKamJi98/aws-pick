@@ -32,8 +32,8 @@ jobs:
           pytest -q
       - name: Lint
         run: |
-          .venv/bin/ruff check .
-          .venv/bin/ruff format --check .
+          ruff check .
+          ruff format --check .
 
   release-please:
     needs: test
