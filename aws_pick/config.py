@@ -9,7 +9,7 @@ import configparser
 import logging
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from rich.console import Console
 from rich.table import Table
@@ -66,39 +66,137 @@ def read_aws_profiles() -> List[str]:
         return []
 
 
-def get_grouped_profiles(profiles: List[str]) -> List[Tuple[str, str]]:
+def _parse_group_rules(rules: Optional[str]) -> List[Tuple[str, List[str]]]:
+    """Parse group rules string into ordered mapping.
+
+    Format examples:
+    - "preprod=preprod;prod=prod;stg=stg;dev=dev" (default order)
+    - "prod=prod,production;dev=dev" (keywords list)
+
+    Returns an ordered list of tuples [(group, [keywords...])].
     """
-    Group profiles by environment and return a list of (profile, group) tuples.
+    if not rules:
+        return [
+            ("preprod", ["preprod"]),
+            ("prod", ["prod"]),
+            ("stg", ["stg"]),
+            ("dev", ["dev"]),
+        ]
+
+    ordered: List[Tuple[str, List[str]]] = []
+    for part in rules.split(";"):
+        part = part.strip()
+        if not part:
+            continue
+        if "=" in part:
+            name, kws = part.split("=", 1)
+            name = name.strip()
+            keywords = [k.strip() for k in kws.split(",") if k.strip()]
+        else:
+            name = part
+            keywords = [part]
+        if name:
+            ordered.append((name, keywords))
+    return ordered
+
+
+def _match_any(text: str, patterns: List[str], *, regex: bool, case_sensitive: bool) -> bool:
+    import re as _re
+
+    flags = 0 if case_sensitive else _re.IGNORECASE
+    if regex:
+        return any(_re.search(p, text, flags=flags) is not None for p in patterns)
+    if not case_sensitive:
+        text = text.lower()
+        patterns = [p.lower() for p in patterns]
+    return any(p in text for p in patterns)
+
+
+def filter_profiles(
+    profiles: List[str],
+    *,
+    include: Optional[List[str]] = None,
+    exclude: Optional[List[str]] = None,
+    regex: bool = False,
+    case_sensitive: bool = False,
+) -> List[str]:
+    """Filter profiles by include/exclude patterns.
+
+    - include: only keep profiles matching any pattern
+    - exclude: drop profiles matching any pattern
+    """
+    result = list(profiles)
+    if include:
+        result = [
+            p
+            for p in result
+            if _match_any(p, include, regex=regex, case_sensitive=case_sensitive)
+        ]
+    if exclude:
+        result = [
+            p
+            for p in result
+            if not _match_any(p, exclude, regex=regex, case_sensitive=case_sensitive)
+        ]
+    return result
+
+
+def get_grouped_profiles(
+    profiles: List[str],
+    *,
+    group_rules: Optional[str] = None,
+    show_groups: Optional[List[str]] = None,
+    include: Optional[List[str]] = None,
+    exclude: Optional[List[str]] = None,
+    regex: bool = False,
+    case_sensitive: bool = False,
+) -> List[Tuple[str, str]]:
+    """
+    Group profiles by user-defined rules and return list of (profile, group).
 
     Args:
-        profiles (List[str]): List of profile names
-
-    Returns:
-        List[Tuple[str, str]]: List of (profile, group) tuples sorted by group
+        profiles: List of profile names
+        group_rules: Rules string (e.g., "prod=prod;dev=dev"). Order matters.
+        show_groups: If provided, only include these group names.
+        include: Include-only patterns (substring or regex)
+        exclude: Exclude patterns (substring or regex)
+        regex: Treat include/exclude as regex if True
+        case_sensitive: Case sensitivity for matching
     """
-    groups = {
-        "prod": [],
-        "preprod": [],
-        "stg": [],
-        "dev": [],
-        "others": [],
-    }
-    for profile in profiles:
-        if "prod" in profile:
-            groups["prod"].append(profile)
-        elif "preprod" in profile:
-            groups["preprod"].append(profile)
-        elif "stg" in profile:
-            groups["stg"].append(profile)
-        elif "dev" in profile:
-            groups["dev"].append(profile)
-        else:
+    # Apply include/exclude filtering first
+    filtered = filter_profiles(
+        profiles,
+        include=include,
+        exclude=exclude,
+        regex=regex,
+        case_sensitive=case_sensitive,
+    )
+
+    ordered_rules = _parse_group_rules(group_rules)
+    group_order = [name for name, _ in ordered_rules]
+
+    groups: Dict[str, List[str]] = {name: [] for name in group_order}
+    groups["others"] = []
+
+    for profile in filtered:
+        assigned = False
+        for name, keywords in ordered_rules:
+            if _match_any(profile, keywords, regex=False, case_sensitive=False):
+                groups[name].append(profile)
+                assigned = True
+                break
+        if not assigned:
             groups["others"].append(profile)
 
-    grouped_profiles = []
-    for group_name, profile_list in groups.items():
-        for profile in sorted(profile_list):
-            grouped_profiles.append((profile, group_name))
+    # Limit to requested groups if specified
+    allowed_groups = set(g.strip() for g in show_groups) if show_groups else None
+
+    grouped_profiles: List[Tuple[str, str]] = []
+    for grp in group_order + ["others"]:
+        if allowed_groups is not None and grp not in allowed_groups:
+            continue
+        for profile in sorted(groups[grp]):
+            grouped_profiles.append((profile, grp))
     return grouped_profiles
 
 

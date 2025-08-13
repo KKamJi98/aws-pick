@@ -5,6 +5,7 @@ including user interaction, profile selection, and command execution.
 """
 
 import argparse
+import os
 import logging
 import sys
 from typing import List, Optional
@@ -36,6 +37,40 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--export-command",
         action="store_true",
         help=argparse.SUPPRESS,
+    )
+    # Filtering and grouping options
+    parser.add_argument(
+        "-f",
+        "--filter",
+        action="append",
+        help="Only show profiles that match any of these substrings (can repeat or comma-separate)",
+    )
+    parser.add_argument(
+        "-x",
+        "--exclude",
+        action="append",
+        help="Exclude profiles that match any of these substrings (can repeat or comma-separate)",
+    )
+    parser.add_argument(
+        "-g",
+        "--groups",
+        help="Comma-separated group names to display (e.g., prod,dev)",
+    )
+    parser.add_argument(
+        "--group-rules",
+        help=(
+            "Custom group rules, e.g. 'preprod=preprod;prod=prod,production;dev=dev' (order matters)"
+        ),
+    )
+    parser.add_argument(
+        "--regex",
+        action="store_true",
+        help="Treat filter/exclude as regular expressions",
+    )
+    parser.add_argument(
+        "--case-sensitive",
+        action="store_true",
+        help="Make filter/exclude matching case-sensitive",
     )
     return parser.parse_args(argv)
 
@@ -104,8 +139,55 @@ def main(argv: Optional[List[str]] = None) -> int:
             logger.error("No AWS profiles found. Please check your AWS configuration.")
             return 1
 
-        # Group and sort profiles for display
-        grouped_profiles = get_grouped_profiles(profiles)
+        # Parse args and env for filtering
+        args = parse_args(argv)
+
+        def _split_csv_many(values: Optional[List[str]]) -> List[str]:
+            parts: List[str] = []
+            if not values:
+                return parts
+            for v in values:
+                if not v:
+                    continue
+                parts.extend([p.strip() for p in v.split(",") if p.strip()])
+            return parts
+
+        env_filter = os.environ.get("AWSPICK_FILTER")
+        env_exclude = os.environ.get("AWSPICK_EXCLUDE")
+        env_groups = os.environ.get("AWSPICK_GROUPS_SHOW")
+        env_rules = os.environ.get("AWSPICK_GROUP_RULES")
+        env_regex = os.environ.get("AWSPICK_REGEX", "0").lower() in {"1", "true", "yes"}
+        env_case = os.environ.get("AWSPICK_CASE_SENSITIVE", "0").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+
+        include_patterns = _split_csv_many(args.filter) or (
+            [p.strip() for p in env_filter.split(",")] if env_filter else []
+        )
+        exclude_patterns = _split_csv_many(args.exclude) or (
+            [p.strip() for p in env_exclude.split(",")] if env_exclude else []
+        )
+        groups_to_show = (
+            [p.strip() for p in args.groups.split(",") if p.strip()]
+            if args and args.groups
+            else ([p.strip() for p in env_groups.split(",")] if env_groups else None)
+        )
+        group_rules = args.group_rules if args and args.group_rules else env_rules
+        use_regex = args.regex or env_regex
+        case_sensitive = args.case_sensitive or env_case
+
+        # Group and sort profiles for display, with optional filters
+        grouped_profiles = get_grouped_profiles(
+            profiles,
+            group_rules=group_rules,
+            show_groups=groups_to_show,
+            include=include_patterns or None,
+            exclude=exclude_patterns or None,
+            regex=use_regex,
+            case_sensitive=case_sensitive,
+        )
         display_profiles(grouped_profiles)
 
         # The list of profiles for selection must match the display order
