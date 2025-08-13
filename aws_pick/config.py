@@ -67,25 +67,75 @@ def read_aws_profiles() -> List[str]:
         return []
 
 
-def display_profiles(profiles: List[str]) -> None:
+def get_grouped_profiles(profiles: List[str]) -> List[Tuple[str, str]]:
+    """
+    Group profiles by environment and return a list of (profile, group) tuples.
+
+    Args:
+        profiles (List[str]): List of profile names
+
+    Returns:
+        List[Tuple[str, str]]: List of (profile, group) tuples sorted by group
+    """
+    groups = {
+        "prod": [],
+        "preprod": [],
+        "stg": [],
+        "dev": [],
+        "others": [],
+    }
+    for profile in profiles:
+        if "prod" in profile:
+            groups["prod"].append(profile)
+        elif "preprod" in profile:
+            groups["preprod"].append(profile)
+        elif "stg" in profile:
+            groups["stg"].append(profile)
+        elif "dev" in profile:
+            groups["dev"].append(profile)
+        else:
+            groups["others"].append(profile)
+
+    grouped_profiles = []
+    for group_name, profile_list in groups.items():
+        for profile in sorted(profile_list):
+            grouped_profiles.append((profile, group_name))
+    return grouped_profiles
+
+
+def display_profiles(grouped_profiles: List[Tuple[str, str]]) -> None:
     """
     Display available AWS profiles in a tabulated format using rich.
 
     Args:
-        profiles (List[str]): List of profile names
+        grouped_profiles (List[Tuple[str, str]]): List of (profile, group) tuples
     """
     console = Console(file=sys.stderr)
 
-    if not profiles:
+    if not grouped_profiles:
         console.print("[bold red]No AWS profiles found in ~/.aws/config[/bold red]")
         return
 
+    group_colors = {
+        "prod": "bold red",
+        "preprod": "bold green",
+        "stg": "bold orange3",
+        "dev": "bold blue",
+        "others": "bold white",
+    }
+
     table = Table(title="AWS Profiles", style="bold blue")
     table.add_column("No.", style="cyan", justify="right")
-    table.add_column("Profile", style="green")
+    table.add_column("Profile", style="white")
+    table.add_column("Group", style="white")
 
-    for i, profile in enumerate(profiles):
-        table.add_row(str(i + 1), profile)
+    for i, (profile, group_name) in enumerate(grouped_profiles):
+        color = group_colors.get(group_name, "white")
+        table.add_row(
+            str(i + 1),
+            profile,
+            f"[{color}]{group_name}[/{color}]",
+        )
 
     console.print(table)
 

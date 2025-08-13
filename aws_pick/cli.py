@@ -11,6 +11,7 @@ from typing import List, Optional
 
 from aws_pick.config import (
     display_profiles,
+    get_grouped_profiles,
     read_aws_profiles,
     validate_profile_selection,
 )
@@ -104,11 +105,15 @@ def main(argv: Optional[List[str]] = None) -> int:
             logger.error("No AWS profiles found. Please check your AWS configuration.")
             return 1
 
-        # Display profiles
-        display_profiles(profiles)
+        # Group and sort profiles for display
+        grouped_profiles = get_grouped_profiles(profiles)
+        display_profiles(grouped_profiles)
+
+        # The list of profiles for selection must match the display order
+        selection_profiles = [p[0] for p in grouped_profiles]
 
         # Get user selection
-        profile = get_profile_selection(profiles)
+        profile = get_profile_selection(selection_profiles)
         if not profile:
             logger.info("No profile selected, exiting")
             return 1
@@ -135,7 +140,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         # Always print the export command so the user can eval the output
         print(export_cmd)
         print(
-            "Run 'eval \"$(awspick)\"' to apply in the current shell",
+            "Run 'eval \"$(awspick)\"\' to apply in the current shell",
             file=sys.stderr,
         )
 
@@ -144,6 +149,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}", exc_info=True)
         return 1
+
 
 
 if __name__ == "__main__":

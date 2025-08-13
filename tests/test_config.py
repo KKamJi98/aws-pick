@@ -63,12 +63,11 @@ def test_display_profiles(mock_console_class):
     mock_console = MagicMock()
     mock_console_class.return_value = mock_console
 
-    profiles = ["default", "dev", "prod"]
-    display_profiles(profiles)
+    grouped_profiles = [("dev", "dev"), ("prod", "prod"), ("default", "others")]
+    display_profiles(grouped_profiles)
 
     mock_console_class.assert_called_once_with(file=sys.stderr)
     mock_console.print.assert_called_once()
-    # Further assertions can be added to check table content if needed
 
 
 @patch("aws_pick.config.Console")

@@ -24,6 +24,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 
 ## Features
 
+- Automatically groups and color-codes profiles by environment (dev, stg, prod, preprod).
 - Lists all available AWS profiles from your `~/.aws/config` file with numbered options
 - Allows selection by either number or profile name
 - Validates input to ensure a valid profile is selected

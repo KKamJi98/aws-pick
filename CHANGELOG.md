@@ -1,4 +1,9 @@
 # Changelog
+## [1.4.0] - 2025-08-13
+### Added
+- Automatically group and color-code profiles by environment (dev, stg, prod, preprod).
+
+
 ## [1.3.6](https://github.com/KKamJi98/aws-pick/compare/v1.3.5...v1.3.6) (2025-06-28)
 
 

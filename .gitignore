@@ -50,3 +50,4 @@ poetry.lock
 .envrc
 
 GEMINI.md
+AGENTS.md
