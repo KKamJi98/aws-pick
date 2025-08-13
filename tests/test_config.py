@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 from aws_pick.config import (
     display_profiles,
     get_aws_config_path,
+    get_grouped_profiles,
     read_aws_profiles,
     validate_profile_selection,
 )
@@ -106,3 +107,14 @@ def test_validate_profile_selection():
 
     # Test empty input
     assert validate_profile_selection("", profiles) is None
+
+
+def test_get_grouped_profiles_preprod_vs_prod():
+    """preprod가 prod로 오분류되지 않아야 한다."""
+    profiles = ["dev-main", "preprod-main", "prod-main", "misc"]
+    grouped = dict(get_grouped_profiles(profiles))
+
+    assert grouped["preprod-main"] == "preprod"
+    assert grouped["prod-main"] == "prod"
+    assert grouped["dev-main"] == "dev"
+    assert grouped["misc"] == "others"
