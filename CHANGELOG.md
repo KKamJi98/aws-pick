@@ -1,4 +1,28 @@
 # Changelog
+## [1.4.0](https://github.com/KKamJi98/aws-pick/compare/v1.3.6...v1.4.0) (2025-08-13)
+
+
+### Features
+
+* add filtering and grouping options ([b5fbe11](https://github.com/KKamJi98/aws-pick/commit/b5fbe11e21cab6a57d107c00cc1c41422c677c05))
+* group and color-code profiles by environment ([8192f99](https://github.com/KKamJi98/aws-pick/commit/8192f99920acc52dcd80237f4e21815c60628263))
+
+
+### Bug Fixes
+
+* add ruff to dev dependencies and remove black and isort ([d34ab6d](https://github.com/KKamJi98/aws-pick/commit/d34ab6d1e3ce64f9ac4b5bd1fe7305c7ade2ef0a))
+* apply ruff fixes ([9825340](https://github.com/KKamJi98/aws-pick/commit/9825340cf371feec689e96f99d3bb8fed8f051cf))
+* place preprod second from bottom and avoid prod substring matches ([03a2376](https://github.com/KKamJi98/aws-pick/commit/03a2376ff43aa1d9a29a254b3fda8dff7eb3a3b5))
+
+
+### Documentation
+
+* document default group order with preprod second from bottom ([c0a2142](https://github.com/KKamJi98/aws-pick/commit/c0a214244aa074c4155a13b766d5bd1472f07ace))
+* document unified CI workflow in README ([6468223](https://github.com/KKamJi98/aws-pick/commit/646822309d03ea1fbfba898c9e0fb4e15cfe747a))
+* update README with profile switching logic ([2fb1dbc](https://github.com/KKamJi98/aws-pick/commit/2fb1dbc04dee5a260dbbd48c925be6d8248ce8c0))
+* update README.md to reflect new repo URL and remove pip install ([96330ac](https://github.com/KKamJi98/aws-pick/commit/96330ac63c2bc90ba26ea836abf0afe06423ba4b))
+* use ruff for linting and formatting ([fa19a90](https://github.com/KKamJi98/aws-pick/commit/fa19a9001a436c4271abe483a4fd0b56205719e4))
+
 ## [1.4.0] - 2025-08-13
 ### Added
 - Automatically group and color-code profiles by environment (dev, stg, prod, preprod).
