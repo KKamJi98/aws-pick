@@ -57,6 +57,21 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Python 3.9 or higher
 - uv (for development)
 
+### Install with uv tool (global CLI)
+
+Use uv's tool installation when you want `awspick` available outside any virtual environment.
+
+```bash
+# Install from the current checkout as a global tool
+uv tool install .
+
+# Keep it editable if you want code changes to take effect immediately
+uv tool install --editable .
+```
+
+After installation, add the bin directory printed by uv to your `PATH` so you can run `awspick`
+from any shell.
+
 ### From source
 
 ```bash
@@ -74,31 +89,37 @@ Simply run the command:
 awspick
 ```
 
-Or invoke the launcher script directly:
+Apply the selected profile immediately in the current shell:
+- Installed via `uv tool install`: `eval "$(awspick)"`
+- Running the script directly: `eval "$(python3 /path/to/aws_pick.py)"`
+
+You can also invoke the launcher script directly:
 
 ```bash
 python3 /path/to/aws_pick.py
-```
-
-To apply the profile immediately in your current shell, run:
-
-```bash
-eval "$(python3 /path/to/aws_pick.py)"
 ```
 
 All prompts and logs are printed to **stderr**, while the final
 `export AWS_PROFILE="..."` command is printed to **stdout**. This
 ensures the menu is visible when using command substitution.
 
-Add a wrapper function to your shell to avoid typing `eval` each time:
+Add a wrapper function to your shell to avoid typing `eval` each time. Use `command awspick` when
+installed as a uv tool to avoid recursion:
 
 ```bash
-function awspick() {
+function awspick_apply() {
+    eval "$(command awspick)"
+}
+
+function awspick_local() {
     eval "$(python3 /your/path/to/aws_pick.py)"
 }
+
+alias ap='awspick_apply'
 ```
 
-Use this function to select and apply a profile in one step.
+Use these helper functions to select and apply a profile in one step, depending on how you installed
+the tool.
 
 This will:
 1. Display a list of available AWS profiles
