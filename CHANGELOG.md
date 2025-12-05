@@ -1,4 +1,11 @@
 # Changelog
+## [1.4.1](https://github.com/KKamJi98/aws-pick/compare/v1.4.0...v1.4.1) (2025-12-05)
+
+
+### Documentation
+
+* document uv tool install eval flow ([8743470](https://github.com/KKamJi98/aws-pick/commit/87434703bb27bedda8f1aaf7f910b492c04a58e5))
+
 ## [1.4.0](https://github.com/KKamJi98/aws-pick/compare/v1.3.6...v1.4.0) (2025-08-13)
 
 
