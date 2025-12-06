@@ -5,4 +5,4 @@ This package provides functionality to list, select, and set AWS profiles
 by modifying the AWS_PROFILE environment variable in your shell configuration.
 """
 
-__version__ = "1.4.0"
+__version__ = "1.4.1"
