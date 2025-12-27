@@ -67,6 +67,12 @@ uv tool install .
 
 # Keep it editable if you want code changes to take effect immediately
 uv tool install --editable .
+
+# Upgrade an existing installation (reinstall with latest changes)
+uv tool install --upgrade .
+
+# Editable + upgrade: reinstall in editable mode so code changes apply immediately
+uv tool install --editable --upgrade .
 ```
 
 After installation, add the bin directory printed by uv to your `PATH` so you can run `awspick`
