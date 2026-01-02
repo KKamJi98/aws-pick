@@ -1,4 +1,16 @@
 # Changelog
+## [1.5.0](https://github.com/KKamJi98/aws-pick/compare/v1.4.1...v1.5.0) (2026-01-02)
+
+
+### Features
+
+* **cli:** show current AWS profile in table ([ae47974](https://github.com/KKamJi98/aws-pick/commit/ae4797446e096ceea77599ac1edda9566a2188a8))
+
+
+### Documentation
+
+* add uv tool upgrade and editable install instructions to README.md ([78f0f07](https://github.com/KKamJi98/aws-pick/commit/78f0f07ec0cf41a99f3476bc27bdbe58c2e9a333))
+
 ## [1.4.1](https://github.com/KKamJi98/aws-pick/compare/v1.4.0...v1.4.1) (2025-12-05)
 
 
