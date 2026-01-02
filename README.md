@@ -5,14 +5,14 @@ A simple CLI tool to easily switch between AWS profiles in your shell environmen
 ```
 INFO: Found 4 AWS profiles
   AWS Profiles
-┏━━━━━┳━━━━━━━━━━━┓
-┃ No. ┃ Profile   ┃
-┡━━━━━╇━━━━━━━━━━━┩
-│   1 │ default   │
-│   2 │ dev       │
-│   3 │ stg       │
-│   4 │ prod      │
-└─────┴───────────┘
+┏━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+┃ No. ┃ Profile   ┃ Group  ┃ Current ┃
+┡━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+│   1 │ default   │ others │         │
+│   2 │ dev       │ dev    │ *       │
+│   3 │ stg       │ stg    │         │
+│   4 │ prod      │ prod   │         │
+└─────┴───────────┴────────┴─────────┘
 Enter profile number or name:
 ```
 
@@ -28,6 +28,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Lists all available AWS profiles from your `~/.aws/config` file with numbered options
 - Allows selection by either number or profile name
 - Validates input to ensure a valid profile is selected
+- Highlights the current `AWS_PROFILE` in the table
 - Supports multiple shells:
   - Bash (`~/.bashrc`)
   - Zsh (`~/.zshrc`)
@@ -46,7 +47,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Read profiles: Parses `~/.aws/config` and collects `default` and sections named `profile <name>`.
 - Filter list: Applies include/exclude patterns from CLI flags or env vars. Patterns can be substrings or regular expressions (`--regex`), with optional case sensitivity (`--case-sensitive`).
 - Group profiles: Groups names using ordered rules. Default order among defined groups: `prod`, `stg`, `dev`, `preprod` (so `preprod` is second from bottom). `others` is always displayed last. First matching rule wins; unmatched profiles go to `others`.
-- Display and select: Renders a numbered table via `rich`. Input accepts either the number (1-based, current display order) or the profile name (case-insensitive match supported).
+- Display and select: Renders a numbered table via `rich` and highlights the current `AWS_PROFILE` in the "Current" column. Input accepts either the number (1-based, current display order) or the profile name (case-insensitive match supported).
 - Apply to shell: Detects your shell (`bash`, `zsh`, `fish`) and writes or replaces a single `AWS_PROFILE="<name>"` line in the corresponding rc file. Creates a timestamped backup and avoids duplicate changes if the same profile is already set.
 - Export command: Prints the exact shell command to stdout so you can run `eval "$(awspick)"` to apply immediately in the current session.
 
@@ -136,12 +137,12 @@ This will:
 Example output:
 ```
 Available AWS Profiles:
-| Num | Profile       |
-|-----|---------------|
-|  1  | default       |
-|  2  | development   |
-|  3  | production    |
-|  4  | staging       |
+| Num | Profile       | Group  | Current |
+|-----|---------------|--------|---------|
+|  1  | default       | others |         |
+|  2  | development   | dev    |         |
+|  3  | production    | prod   | *       |
+|  4  | staging       | stg    |         |
 
 Enter profile number or name: 2
 Selected profile: development

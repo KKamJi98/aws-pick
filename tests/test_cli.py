@@ -115,11 +115,15 @@ def test_main_no_profiles(mock_read_profiles):
 @patch("aws_pick.cli.read_aws_profiles")
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
-def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_profiles):
+@patch("aws_pick.cli.get_current_profile")
+def test_main_cancelled_selection(
+    mock_get_current_profile, mock_get_selection, mock_display, mock_read_profiles
+):
     """Test main function with cancelled selection."""
     # Setup mock
     mock_read_profiles.return_value = ["default", "dev", "prod"]
     mock_get_selection.return_value = None
+    mock_get_current_profile.return_value = None
 
     # Call function
     result = main([])
@@ -137,7 +141,9 @@ def test_main_cancelled_selection(mock_get_selection, mock_display, mock_read_pr
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
+@patch("aws_pick.cli.get_current_profile")
 def test_main_successful_update(
+    mock_get_current_profile,
     mock_print,
     mock_detect_shell,
     mock_update,
@@ -151,6 +157,7 @@ def test_main_successful_update(
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (True, "/home/user/.zshrc.bak-20250605060000")
     mock_detect_shell.return_value = "bash"
+    mock_get_current_profile.return_value = "default"
 
     # Call function
     result = main([])
@@ -169,8 +176,14 @@ def test_main_successful_update(
 @patch("aws_pick.cli.get_profile_selection")
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
+@patch("aws_pick.cli.get_current_profile")
 def test_main_failed_update(
-    mock_detect_shell, mock_update, mock_get_selection, mock_display, mock_read_profiles
+    mock_get_current_profile,
+    mock_detect_shell,
+    mock_update,
+    mock_get_selection,
+    mock_display,
+    mock_read_profiles,
 ):
     """Test main function with failed update."""
     # Setup mock
@@ -178,6 +191,7 @@ def test_main_failed_update(
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (False, None)
     mock_detect_shell.return_value = "bash"
+    mock_get_current_profile.return_value = None
 
     # Call function
     result = main([])
@@ -196,7 +210,9 @@ def test_main_failed_update(
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
+@patch("aws_pick.cli.get_current_profile")
 def test_main_outputs_export_command(
+    mock_get_current_profile,
     mock_print,
     mock_detect_shell,
     mock_update,
@@ -210,6 +226,7 @@ def test_main_outputs_export_command(
     mock_get_selection.return_value = "dev"
     mock_update.return_value = (True, None)
     mock_detect_shell.return_value = "bash"
+    mock_get_current_profile.return_value = "dev"
 
     result = main([])
 

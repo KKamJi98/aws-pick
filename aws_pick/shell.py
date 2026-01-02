@@ -184,6 +184,42 @@ def backup_rc_file(rc_path: Path) -> Path:
         raise
 
 
+def get_current_profile(shell_name: str = None) -> Optional[str]:
+    """
+    Get the current AWS profile from the environment or shell rc file.
+
+    Args:
+        shell_name (str, optional): Shell name. If None, auto-detect.
+
+    Returns:
+        Optional[str]: Current AWS profile name if found
+    """
+    env_profile = os.environ.get("AWS_PROFILE")
+    if env_profile:
+        env_profile = env_profile.strip()
+        if env_profile:
+            logger.info("Using AWS_PROFILE from environment")
+            return env_profile
+
+    rc_path, shell_config = get_rc_path(shell_name)
+    if not rc_path.exists():
+        return None
+
+    try:
+        with open(rc_path, "r") as f:
+            content = f.read()
+
+        match = shell_config.get_profile_pattern().search(content)
+        if not match:
+            return None
+
+        profile = match.group(1).strip().strip("\"'")
+        return profile or None
+    except Exception as e:
+        logger.warning(f"Failed to read current AWS_PROFILE from {rc_path}: {e}")
+        return None
+
+
 def update_aws_profile(
     profile_name: str, shell_name: str = None
 ) -> Tuple[bool, Optional[Path]]:

@@ -19,6 +19,7 @@ from aws_pick.config import (
 from aws_pick.shell import (
     detect_shell,
     generate_export_command,
+    get_current_profile,
     get_rc_path,
     update_aws_profile,
 )
@@ -188,7 +189,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             regex=use_regex,
             case_sensitive=case_sensitive,
         )
-        display_profiles(grouped_profiles)
+        current_profile = get_current_profile()
+        display_profiles(grouped_profiles, current_profile=current_profile)
 
         # The list of profiles for selection must match the display order
         selection_profiles = [p[0] for p in grouped_profiles]

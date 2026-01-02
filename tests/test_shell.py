@@ -9,6 +9,7 @@ from aws_pick.shell import (
     backup_rc_file,
     detect_shell,
     generate_export_command,
+    get_current_profile,
     get_rc_path,
     get_shell_configs,
     update_aws_profile,
@@ -113,6 +114,41 @@ def test_get_rc_path(mock_detect_shell):
     rc_path, shell_config = get_rc_path("unknown-shell")
     assert rc_path == Path.home() / ".bashrc"
     assert shell_config.name == "bash"
+
+
+@patch("aws_pick.shell.get_rc_path")
+@patch("aws_pick.shell.os.environ")
+def test_get_current_profile_from_env(mock_environ, mock_get_rc_path):
+    """Test reading current profile from AWS_PROFILE env var."""
+    mock_environ.get.return_value = "dev"
+
+    result = get_current_profile()
+
+    assert result == "dev"
+    mock_get_rc_path.assert_not_called()
+
+
+@patch("aws_pick.shell.get_rc_path")
+@patch("aws_pick.shell.os.environ")
+@patch("pathlib.Path.exists", return_value=True)
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data='export AWS_PROFILE="prod"\n',
+)
+def test_get_current_profile_from_rc_file(
+    mock_file, mock_exists, mock_environ, mock_get_rc_path
+):
+    """Test reading current profile from rc file when env is not set."""
+    mock_environ.get.return_value = ""
+    rc_path = Path("/home/user/.bashrc")
+    shell_config = ShellConfig("bash", rc_path, 'export AWS_PROFILE="{profile_name}"')
+    mock_get_rc_path.return_value = (rc_path, shell_config)
+
+    result = get_current_profile("bash")
+
+    assert result == "prod"
+    mock_file.assert_called_once_with(rc_path, "r")
 
 
 @patch("aws_pick.shell.shutil.copy2")

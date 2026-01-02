@@ -216,12 +216,16 @@ def get_grouped_profiles(
     return grouped_profiles
 
 
-def display_profiles(grouped_profiles: List[Tuple[str, str]]) -> None:
+def display_profiles(
+    grouped_profiles: List[Tuple[str, str]],
+    current_profile: Optional[str] = None,
+) -> None:
     """
     Display available AWS profiles in a tabulated format using rich.
 
     Args:
         grouped_profiles (List[Tuple[str, str]]): List of (profile, group) tuples
+        current_profile (Optional[str]): Current AWS profile name, if available
     """
     console = Console(file=sys.stderr)
 
@@ -241,13 +245,21 @@ def display_profiles(grouped_profiles: List[Tuple[str, str]]) -> None:
     table.add_column("No.", style="cyan", justify="right")
     table.add_column("Profile", style="white")
     table.add_column("Group", style="white")
+    table.add_column("Current", style="white", justify="center")
+
+    current_profile_norm = current_profile.lower().strip() if current_profile else None
 
     for i, (profile, group_name) in enumerate(grouped_profiles):
         color = group_colors.get(group_name, "white")
+        is_current = (
+            current_profile_norm is not None and profile.lower() == current_profile_norm
+        )
+        current_marker = "[bold green]*[/bold green]" if is_current else ""
         table.add_row(
             str(i + 1),
             profile,
             f"[{color}]{group_name}[/{color}]",
+            current_marker,
         )
 
     console.print(table)
