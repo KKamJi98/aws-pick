@@ -22,6 +22,7 @@ from aws_pick.shell import (
     get_current_profile,
     get_rc_path,
     update_aws_profile,
+    write_shared_profile,
 )
 
 # Configure logging
@@ -217,6 +218,15 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"Backup created at {backup_path}", file=sys.stderr)
 
         print(f"Updated {rc_path} with AWS_PROFILE={profile}", file=sys.stderr)
+
+        shared_path = write_shared_profile(profile)
+        if shared_path:
+            print(f"Updated shared profile at {shared_path}", file=sys.stderr)
+        else:
+            print(
+                "Warning: failed to write shared profile file; other shells may not sync.",
+                file=sys.stderr,
+            )
 
         export_cmd = generate_export_command(profile, shell_name)
 

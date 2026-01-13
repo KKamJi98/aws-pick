@@ -138,6 +138,7 @@ def test_main_cancelled_selection(
 @patch("aws_pick.cli.read_aws_profiles")
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.write_shared_profile")
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
@@ -147,6 +148,7 @@ def test_main_successful_update(
     mock_print,
     mock_detect_shell,
     mock_update,
+    mock_write_shared,
     mock_get_selection,
     mock_display,
     mock_read_profiles,
@@ -158,6 +160,7 @@ def test_main_successful_update(
     mock_update.return_value = (True, "/home/user/.zshrc.bak-20250605060000")
     mock_detect_shell.return_value = "bash"
     mock_get_current_profile.return_value = "default"
+    mock_write_shared.return_value = "/home/user/.config/awspick/profile"
 
     # Call function
     result = main([])
@@ -168,12 +171,14 @@ def test_main_successful_update(
     mock_display.assert_called_once()
     mock_get_selection.assert_called_once()
     mock_update.assert_called_once_with("dev", "bash")
+    mock_write_shared.assert_called_once_with("dev")
     assert mock_print.call_count >= 3  # At least 3 print calls
 
 
 @patch("aws_pick.cli.read_aws_profiles")
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.write_shared_profile")
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("aws_pick.cli.get_current_profile")
@@ -181,6 +186,7 @@ def test_main_failed_update(
     mock_get_current_profile,
     mock_detect_shell,
     mock_update,
+    mock_write_shared,
     mock_get_selection,
     mock_display,
     mock_read_profiles,
@@ -202,11 +208,13 @@ def test_main_failed_update(
     mock_display.assert_called_once()
     mock_get_selection.assert_called_once()
     mock_update.assert_called_once_with("dev", "bash")
+    mock_write_shared.assert_not_called()
 
 
 @patch("aws_pick.cli.read_aws_profiles")
 @patch("aws_pick.cli.display_profiles")
 @patch("aws_pick.cli.get_profile_selection")
+@patch("aws_pick.cli.write_shared_profile")
 @patch("aws_pick.cli.update_aws_profile")
 @patch("aws_pick.cli.detect_shell")
 @patch("builtins.print")
@@ -216,6 +224,7 @@ def test_main_outputs_export_command(
     mock_print,
     mock_detect_shell,
     mock_update,
+    mock_write_shared,
     mock_get_selection,
     mock_display,
     mock_read_profiles,
@@ -227,8 +236,10 @@ def test_main_outputs_export_command(
     mock_update.return_value = (True, None)
     mock_detect_shell.return_value = "bash"
     mock_get_current_profile.return_value = "dev"
+    mock_write_shared.return_value = "/home/user/.config/awspick/profile"
 
     result = main([])
 
     assert result == 0
     mock_print.assert_any_call('export AWS_PROFILE="dev"')
+    mock_write_shared.assert_called_once_with("dev")

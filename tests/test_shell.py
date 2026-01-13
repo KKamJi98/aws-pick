@@ -13,6 +13,7 @@ from aws_pick.shell import (
     get_rc_path,
     get_shell_configs,
     update_aws_profile,
+    write_shared_profile,
 )
 
 
@@ -330,3 +331,14 @@ def test_generate_export_command():
     assert bash_cmd == 'export AWS_PROFILE="dev"'
     assert zsh_cmd == 'export AWS_PROFILE="dev"'
     assert fish_cmd == 'set -gx AWS_PROFILE "dev"'
+
+
+def test_write_shared_profile(tmp_path, monkeypatch):
+    """Test writing shared profile file."""
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+
+    shared_path = write_shared_profile("dev")
+
+    expected_path = tmp_path / ".config" / "awspick" / "profile"
+    assert shared_path == expected_path
+    assert expected_path.read_text() == "dev\n"

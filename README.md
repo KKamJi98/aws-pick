@@ -34,6 +34,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
   - Zsh (`~/.zshrc`)
   - Fish (`~/.config/fish/config.fish`)
 - Updates your shell configuration file to set the selected profile as the default
+- Writes the selected profile to a shared file for cross-shell sync
 - Creates backup files before modifying your configuration
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
 - Prints a shell command for immediate application
@@ -50,6 +51,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
 - Display and select: Renders a numbered table via `rich` and highlights the current `AWS_PROFILE` in the "Current" column. Input accepts either the number (1-based, current display order) or the profile name (case-insensitive match supported).
 - Apply to shell: Detects your shell (`bash`, `zsh`, `fish`) and writes or replaces a single `AWS_PROFILE="<name>"` line in the corresponding rc file. Creates a timestamped backup and avoids duplicate changes if the same profile is already set.
 - Export command: Prints the exact shell command to stdout so you can run `eval "$(awspick)"` to apply immediately in the current session.
+- Cross-shell sync: Writes the selected profile to `~/.config/awspick/profile` so other shells can pick it up on the next prompt.
 
 ## Installation
 
@@ -149,6 +151,50 @@ Selected profile: development
 Updated ~/.zshrc with AWS_PROFILE=development
 Backup created at ~/.zshrc.bak-20250605060000
 Configuration reloaded automatically.
+```
+
+## Sync across tabs and shells (recommended)
+
+By default, each shell session has its own environment. To keep multiple tabs or splits in sync,
+`awspick` writes the selected profile to `~/.config/awspick/profile`. Add a small hook so each
+shell reads that file on every prompt. The change will apply on the next prompt.
+
+### Bash
+
+```bash
+# ~/.bashrc
+awspick_sync() {
+  local f="$HOME/.config/awspick/profile"
+  if [ -f "$f" ]; then
+    export AWS_PROFILE="$(cat "$f")"
+  fi
+}
+PROMPT_COMMAND="awspick_sync${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+```
+
+### Zsh
+
+```bash
+# ~/.zshrc
+awspick_sync() {
+  local f="$HOME/.config/awspick/profile"
+  if [ -f "$f" ]; then
+    export AWS_PROFILE="$(cat "$f")"
+  fi
+}
+precmd_functions+=(awspick_sync)
+```
+
+### Fish
+
+```fish
+# ~/.config/fish/config.fish
+function awspick_sync --on-event fish_prompt
+    set -l f ~/.config/awspick/profile
+    if test -f $f
+        set -gx AWS_PROFILE (cat $f)
+    end
+end
 ```
 
 ## Filtering and Grouping

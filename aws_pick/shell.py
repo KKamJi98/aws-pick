@@ -147,6 +147,40 @@ def get_rc_path(shell_name: str = None) -> Tuple[Path, ShellConfig]:
     return shell_configs["bash"].rc_path, shell_configs["bash"]
 
 
+def get_shared_profile_path() -> Path:
+    """
+    Get the shared profile path used for cross-shell synchronization.
+
+    Returns:
+        Path: Path to the shared profile file
+    """
+    return Path.home() / ".config" / "awspick" / "profile"
+
+
+def write_shared_profile(profile_name: str) -> Optional[Path]:
+    """
+    Write the selected profile to a shared file for cross-shell sync.
+
+    Args:
+        profile_name (str): AWS profile name to set
+
+    Returns:
+        Optional[Path]: Path to the shared profile file if successful, otherwise None
+    """
+    shared_path = get_shared_profile_path()
+    try:
+        shared_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = shared_path.with_suffix(".tmp")
+        with open(tmp_path, "w") as f:
+            f.write(f"{profile_name}\n")
+        os.replace(tmp_path, shared_path)
+        logger.info(f"Wrote shared profile to {shared_path}")
+        return shared_path
+    except Exception as e:
+        logger.error(f"Failed to write shared profile file: {e}", exc_info=True)
+        return None
+
+
 def backup_rc_file(rc_path: Path) -> Path:
     """
     Create a backup of the shell rc file.
