@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 
 from aws_pick.shell import (
+    BACKUP_RETENTION_COUNT,
     ShellConfig,
     backup_rc_file,
     detect_shell,
@@ -167,6 +168,32 @@ def test_backup_rc_file(mock_datetime, mock_copy):
     expected_backup = Path("/home/user/.bashrc.bak-20250605060000")
     assert result == expected_backup
     mock_copy.assert_called_once_with(rc_path, expected_backup)
+
+
+@patch("aws_pick.shell.shutil.copy2")
+@patch("aws_pick.shell.datetime")
+def test_backup_rc_file_rotates_old_backups(mock_datetime, mock_copy, tmp_path):
+    """Test backup rotation keeps only BACKUP_RETENTION_COUNT files."""
+    mock_datetime.datetime.now.return_value.strftime.return_value = "20250605060000"
+
+    def _copy_side_effect(_src: Path, dst: Path) -> None:
+        Path(dst).write_text("new")
+
+    mock_copy.side_effect = _copy_side_effect
+
+    rc_path = tmp_path / ".bashrc"
+    rc_path.write_text("export AWS_PROFILE=dev\n")
+
+    for ts in ["20250605055958", "20250605055959", "20250605055960"]:
+        (tmp_path / f".bashrc.bak-{ts}").write_text("old")
+
+    backup_rc_file(rc_path)
+
+    backups = sorted(tmp_path.glob(".bashrc.bak-*"))
+    assert len(backups) == BACKUP_RETENTION_COUNT
+    assert backups[0].name == ".bashrc.bak-20250605055960"
+    assert backups[1].name == ".bashrc.bak-20250605060000"
+    mock_copy.assert_called_once()
 
 
 @patch("aws_pick.shell.get_rc_path")

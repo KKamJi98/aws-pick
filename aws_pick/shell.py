@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple
 
 logger = logging.getLogger(__name__)
+BACKUP_RETENTION_COUNT = 2
 
 
 class ShellConfig:
@@ -202,10 +203,10 @@ def backup_rc_file(rc_path: Path) -> Path:
         shutil.copy2(rc_path, backup_path)
         logger.info(f"Backup created at {backup_path}")
 
-        # Rotate old backups, keep only the 5 most recent
+        # Rotate old backups, keep only BACKUP_RETENTION_COUNT
         backups = sorted(rc_path.parent.glob(f"{rc_path.name}.bak-*"))
-        if len(backups) > 5:
-            for old_backup in backups[:-5]:
+        if len(backups) > BACKUP_RETENTION_COUNT:
+            for old_backup in backups[:-BACKUP_RETENTION_COUNT]:
                 try:
                     old_backup.unlink()
                     logger.info(f"Removed old backup {old_backup}")

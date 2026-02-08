@@ -35,7 +35,7 @@ AWS Pick (`awspick`) is a command-line utility that helps you quickly switch bet
   - Fish (`~/.config/fish/config.fish`)
 - Updates your shell configuration file to set the selected profile as the default
 - Writes the selected profile to a shared file for cross-shell sync
-- Creates backup files before modifying your configuration
+- Creates backup files before modifying your configuration (keeps the 2 most recent backups)
 - Ensures idempotency (no duplicate modifications if selecting the same profile)
 - Prints a shell command for immediate application
 - Provides clear logging of operations
