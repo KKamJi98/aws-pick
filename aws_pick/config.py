@@ -203,9 +203,7 @@ def get_grouped_profiles(
     # Separate explicit keyword rules from catch-all (*) rule.
     # Explicit rules are matched first; unmatched profiles go to catch-all.
     explicit_rules = [(n, kws) for n, kws in ordered_rules if "*" not in kws]
-    catchall_name = next(
-        (n for n, kws in ordered_rules if "*" in kws), "others"
-    )
+    catchall_name = next((n for n, kws in ordered_rules if "*" in kws), "others")
 
     groups: Dict[str, List[str]] = {name: [] for name in group_order}
     groups.setdefault(catchall_name, [])
