@@ -72,11 +72,16 @@ def _parse_group_rules(rules: Optional[str]) -> List[Tuple[str, List[str]]]:
     Format examples:
     - "preprod=preprod;prod=prod;stg=stg;dev=dev" (default order)
     - "prod=prod,production;dev=dev" (keywords list)
+    - "others;tf=tf" (positional others: others on top, tf below)
+    - "main=*;tf=tf" (renamed catch-all via wildcard)
+
+    Special tokens:
+    - ``others`` without ``=``: positional marker for unmatched profiles.
+    - ``*`` keyword: catch-all wildcard (allows renaming the default group).
 
     Returns an ordered list of tuples [(group, [keywords...])].
     """
     if not rules:
-        # Default order puts "preprod" second from bottom (above "others")
         return [
             ("prod", ["prod"]),
             ("stg", ["stg"]),
@@ -93,6 +98,10 @@ def _parse_group_rules(rules: Optional[str]) -> List[Tuple[str, List[str]]]:
             name, kws = part.split("=", 1)
             name = name.strip()
             keywords = [k.strip() for k in kws.split(",") if k.strip()]
+        elif part.strip().lower() == "others":
+            # Bare "others" → positional marker (no keywords, acts as catch-all)
+            name = "others"
+            keywords = ["*"]
         else:
             name = part
             keywords = [part]
@@ -191,24 +200,35 @@ def get_grouped_profiles(
     ordered_rules = _parse_group_rules(group_rules)
     group_order = [name for name, _ in ordered_rules]
 
+    # Separate explicit keyword rules from catch-all (*) rule.
+    # Explicit rules are matched first; unmatched profiles go to catch-all.
+    explicit_rules = [(n, kws) for n, kws in ordered_rules if "*" not in kws]
+    catchall_name = next(
+        (n for n, kws in ordered_rules if "*" in kws), "others"
+    )
+
     groups: Dict[str, List[str]] = {name: [] for name in group_order}
-    groups["others"] = []
+    groups.setdefault(catchall_name, [])
 
     for profile in filtered:
         assigned = False
-        for name, keywords in ordered_rules:
+        for name, keywords in explicit_rules:
             if any(_match_group_keyword(profile, kw) for kw in keywords):
                 groups[name].append(profile)
                 assigned = True
                 break
         if not assigned:
-            groups["others"].append(profile)
+            groups[catchall_name].append(profile)
 
     # Limit to requested groups if specified
     allowed_groups = set(g.strip() for g in show_groups) if show_groups else None
 
+    # Ensure catch-all group is in display order
+    if catchall_name not in group_order:
+        group_order.append(catchall_name)
+
     grouped_profiles: List[Tuple[str, str]] = []
-    for grp in group_order + ["others"]:
+    for grp in group_order:
         if allowed_groups is not None and grp not in allowed_groups:
             continue
         for profile in sorted(groups[grp]):
@@ -249,7 +269,11 @@ def display_profiles(
 
     current_profile_norm = current_profile.lower().strip() if current_profile else None
 
+    prev_group = None
     for i, (profile, group_name) in enumerate(grouped_profiles):
+        if prev_group is not None and group_name != prev_group:
+            table.add_section()
+        prev_group = group_name
         color = group_colors.get(group_name, "white")
         is_current = (
             current_profile_norm is not None and profile.lower() == current_profile_norm
