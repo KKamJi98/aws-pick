@@ -1,4 +1,24 @@
 # Changelog
+## [1.5.0](https://github.com/KKamJi98/aws-pick/compare/v1.4.1...v1.5.0) (2026-02-12)
+
+
+### Features
+
+* **cli:** show current AWS profile in table ([ae47974](https://github.com/KKamJi98/aws-pick/commit/ae4797446e096ceea77599ac1edda9566a2188a8))
+* **group:** add group dividers, others positioning, and wildcard catch-all ([2d1ca68](https://github.com/KKamJi98/aws-pick/commit/2d1ca684b919775951fe1fb37eb10a5597b1d15d))
+* **shell:** sync profile across shells ([537133b](https://github.com/KKamJi98/aws-pick/commit/537133b96a83e62a7495f83c22899ab177c317fe))
+
+
+### Bug Fixes
+
+* apply ruff format to config.py ([4e6197f](https://github.com/KKamJi98/aws-pick/commit/4e6197fa2ba3e3e5f7be624bb7a6ad7bc5fc142c))
+* **backup:** keep only two rc backups ([7869b41](https://github.com/KKamJi98/aws-pick/commit/7869b414bcb826cbb18ce6c752380fc152c08d42))
+
+
+### Documentation
+
+* add uv tool upgrade and editable install instructions to README.md ([78f0f07](https://github.com/KKamJi98/aws-pick/commit/78f0f07ec0cf41a99f3476bc27bdbe58c2e9a333))
+
 ## [1.4.1](https://github.com/KKamJi98/aws-pick/compare/v1.4.0...v1.4.1) (2025-12-05)
 
 
